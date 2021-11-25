@@ -1,30 +1,30 @@
-const { fontFamily } = require("tailwindcss/defaultTheme");
+const { fontFamily } = require('tailwindcss/defaultTheme');
 
 module.exports = {
-  mode: "jit",
-  purge: ["./src/**/*.{js,ts,jsx,tsx}"],
-  darkMode: "media",
+  mode: 'jit',
+  purge: ['./src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Outfit", ...fontFamily.sans],
-      },
+        sans: ['Outfit', ...fontFamily.sans]
+      }
     },
     screens: {
-      mobile: "375px",
-      tablet: "768px",
-      laptop: "1024px",
-      desktop: "1440px",
+      mobile: '375px',
+      tablet: '768px',
+      laptop: '1024px',
+      desktop: '1440px'
     },
     colors: {
-      main: "#08434E",
-      bright: "#f8f9fa",
-      dark: "#05282F",
-      strong: "#FF4821",
-    },
+      main: '#08434E',
+      bright: '#f8f9fa',
+      dark: '#05282F',
+      strong: '#FF4821'
+    }
   },
   variants: {
-    extend: {},
+    extend: {}
   },
-  plugins: [require("@tailwindcss/typography")],
+  plugins: [require('@tailwindcss/typography')]
 };
