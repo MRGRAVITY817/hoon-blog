@@ -3,28 +3,21 @@ import Document, {
   Head,
   Html,
   Main,
-  NextScript,
-} from "next/document";
+  NextScript
+} from 'next/document';
 
 class AppDocument extends Document {
-  static getInitialProps = async (context: DocumentContext) => {
-    const initialProps = await Document.getInitialProps(context);
-    return { ...initialProps };
-  };
   render() {
     return (
       <Html lang="ko">
         <Head>
           <link
-            rel="preload"
-            href="/fonts/Outfit-VariableFont_wght.ttf"
-            as="font"
-            type="font/ttf"
-            crossOrigin="anonymous"
+            href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;900&display=swap"
+            rel="stylesheet"
           />
           <link href="/static/favicon.ico" rel="shortcut icon" />
         </Head>
-        <body>
+        <body className="bg-bright dark:bg-dark text-dark dark:text-bright">
           <Main />
           <NextScript />
         </body>

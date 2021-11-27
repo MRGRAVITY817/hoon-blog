@@ -2,10 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: Outfit;
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: optional;
-  src: url(/fonts/Outfit-VariableFont_wght.ttf) format('ttf');
+@layer base {
+  h1 {
+    @apply text-5xl font-bold;
+  }
+  h2 {
+    @apply text-4xl font-semibold;
+  }
+  h3 {
+    @apply text-3xl font-medium;
+  }
 }

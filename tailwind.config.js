@@ -20,7 +20,13 @@ module.exports = {
       main: '#08434E',
       bright: '#f8f9fa',
       dark: '#05282F',
-      strong: '#FF4821'
+      strong: '#FF4821',
+      life: '#FF8121',
+      travel: '#217DFF',
+      rust: '#EEBC87',
+      uiux: '#31D17A',
+      webdev: '#EE87AF',
+      blockchain: '#B13CFF'
     }
   },
   variants: {
