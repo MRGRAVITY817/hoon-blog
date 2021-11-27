@@ -10,6 +10,6 @@
     @apply tablet:text-4xl text-2xl font-semibold;
   }
   h3 {
-    @apply tablet:text-3xl text-xl font-medium;
+    @apply tablet:text-2xl text-xl font-medium;
   }
 }
