@@ -24,7 +24,7 @@ const instagramProfile = '';
 export const Footer = () => {
   return (
     <footer className="tablet:pt-8 tablet:pb-12 pt-4 pb-6 border-t-2">
-      <div className="grid grid-cols-3">
+      <div className="tablet:grid-cols-3 grid grid-cols-2">
         <FooterMenu title="Home" href="/" />
         <FooterMenu title="About Hoon" href="/about" />
         <FooterMenu title="Blog" href="/blog" />
