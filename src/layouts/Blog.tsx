@@ -4,7 +4,7 @@ export const BlogLayout: React.FC<{ post?: Blog }> = ({ post, children }) => {
   if (typeof post === 'undefined') {
     return (
       <article>
-        <h1 className="text-4xl">Post not found.</h1>
+        <h1>Post not found.</h1>
       </article>
     );
   }

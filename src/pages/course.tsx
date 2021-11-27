@@ -1,16 +1,16 @@
 import Head from 'next/head';
 
-const About = () => {
+const Course = () => {
   return (
     <div>
       <Head>
-        <title>About Hoon</title>
+        <title>Courses</title>
       </Head>
       <div>
-        <h1>This is Hoon.</h1>
+        <h1>Dev Course</h1>
       </div>
     </div>
   );
 };
 
-export default About;
+export default Course;

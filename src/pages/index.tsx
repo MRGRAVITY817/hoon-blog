@@ -11,7 +11,7 @@ const Home: NextPage = () => {
       <article className="flex flex-col w-full">
         <section className="">
           <h1 className="mb-8">Welcome, wanderer.</h1>
-          <div className="tablet:grid-flow-col grid grid-flow-row gap-4">
+          <div className="tablet:grid-flow-col tablet:gap-8 grid grid-flow-row gap-4">
             <Image
               src="/static/images/profile.jpg"
               alt="profile image"

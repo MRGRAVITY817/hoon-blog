@@ -9,7 +9,7 @@ const HeaderMenu: React.FC<{ title: string; href: string }> = ({
 }) => {
   return (
     <Link href={href}>
-      <a className="tablet:text-xl hover:underline tablet:mx-4 mx-2 text-lg font-medium transition-all">
+      <a className="tablet:text-xl hover:underline text-lg font-medium transition-all">
         {title}
       </a>
     </Link>
@@ -36,11 +36,11 @@ export const Header: React.FC = () => {
     <header>
       <nav className="py-4 border-b-2">
         <div className="tablet:flex tablet:items-center tablet:justify-between hidden">
-          <div>
+          <div className="grid grid-flow-col gap-8">
             <HeaderMenu title="Home" href="/" />
-            <HeaderMenu title="About" href="/about" />
             <HeaderMenu title="Blog" href="/blog" />
             <HeaderMenu title="Projects" href="/projects" />
+            <HeaderMenu title="Course" href="/course" />
             <HeaderMenu title="Dashboard" href="/dashboard" />
           </div>
           <button onClick={switchTheme} className="text-2xl">
@@ -64,9 +64,9 @@ export const Header: React.FC = () => {
                 className="bg-bright dark:bg-dark absolute z-40 grid grid-flow-row gap-2 p-2 mt-8 border-2"
               >
                 <HeaderMenu title="Home" href="/" />
-                <HeaderMenu title="About" href="/about" />
                 <HeaderMenu title="Blog" href="/blog" />
                 <HeaderMenu title="Projects" href="/projects" />
+                <HeaderMenu title="Course" href="/course" />
                 <HeaderMenu title="Dashboard" href="/dashboard" />
               </div>
             )}

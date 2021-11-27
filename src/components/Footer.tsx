@@ -13,13 +13,9 @@ const FooterMenu: React.FC<{ title: string; href: string }> = ({
   );
 };
 
-const FooterMenuContainer: React.FC = ({ children }) => {
-  return <div className="grid grid-flow-col gap-4 border">{children}</div>;
-};
-
 const twitterProfile = 'https://twitter.com/coderound817';
 const facebookProfile = '';
-const instagramProfile = '';
+const instagramProfile = 'https://www.instagram.com/coderoundhoon/';
 
 export const Footer = () => {
   return (
