@@ -4,7 +4,6 @@ import { GetStaticProps, NextPage } from 'next';
 import { PostPreview } from 'src/components/PostPreview';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-import { BsClock, BsPin } from 'react-icons/bs';
 
 interface BlogIndexProps {
   posts: Blog[];
@@ -70,12 +69,7 @@ const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
       ) : (
         <article className="grid grid-flow-row gap-12">
           <section className="grid">
-            <div className="flex">
-              <h2 className="mb-4">Pinned</h2>
-              <h2 className="ml-4 rotate-45">
-                <BsPin />
-              </h2>
-            </div>
+            <h2 className="mb-4">Pinned</h2>
             <PostPreview
               post={
                 posts.find((post) => post.title === 'Welcome to Hoons blog!')!
@@ -83,12 +77,7 @@ const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
             />
           </section>
           <section>
-            <div className="flex">
-              <h2 className="mb-4">Recent</h2>
-              <h2 className="ml-6">
-                <BsClock />
-              </h2>
-            </div>
+            <h2 className="mb-4">Recent</h2>
             <div className="grid grid-flow-row gap-4">
               {posts
                 .sort((a, b) => {
