@@ -23,9 +23,9 @@ module.exports = {
       strong: '#FF4821',
       life: '#FF8121',
       travel: '#217DFF',
-      rust: '#EEBC87',
+      rust: '#EFBB67',
       uiux: '#31D17A',
-      webdev: '#EE87AF',
+      web: '#EE87AF',
       blockchain: '#B13CFF'
     }
   },
