@@ -4,12 +4,12 @@
 
 @layer base {
   h1 {
-    @apply text-5xl font-bold;
+    @apply tablet:text-5xl text-3xl font-bold;
   }
   h2 {
-    @apply text-4xl font-semibold;
+    @apply tablet:text-4xl text-2xl font-semibold;
   }
   h3 {
-    @apply text-3xl font-medium;
+    @apply tablet:text-3xl text-xl font-medium;
   }
 }

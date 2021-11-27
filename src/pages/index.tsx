@@ -21,11 +21,11 @@ const Home: NextPage = () => {
               objectFit="cover"
               className="tablet:hidden block col-span-1 rounded-lg"
             />
-            <div className="text-light grid w-full grid-flow-row gap-2 text-xl">
+            <div className="grid w-full grid-flow-row gap-2 text-xl font-light">
               <p>
-                My name is <strong>Hoon Wee</strong>, and I am a freelance Web
-                Developer. <br /> I mainly use Next.js framework with Typescript
-                and TailwindCSS.
+                My name is <span className="font-medium">Hoon Wee</span>, and I
+                am a freelance Web Developer. <br /> I mainly use Next.js
+                framework with Typescript and TailwindCSS.
               </p>
               <p>
                 I am also an UX enthusiast, interested in chemistry between

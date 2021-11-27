@@ -26,7 +26,7 @@ export const Footer = () => {
     <footer className="tablet:pt-8 tablet:pb-12 pt-4 pb-6 border-t-2">
       <div className="tablet:grid-cols-3 grid grid-cols-2">
         <FooterMenu title="Home" href="/" />
-        <FooterMenu title="About Hoon" href="/about" />
+        <FooterMenu title="About" href="/about" />
         <FooterMenu title="Blog" href="/blog" />
         <FooterMenu title="Instagram" href={instagramProfile} />
         <FooterMenu title="Facebook" href={facebookProfile} />
