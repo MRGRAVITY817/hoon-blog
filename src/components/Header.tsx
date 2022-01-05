@@ -2,6 +2,7 @@ import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { BsLightbulbOff, BsLightbulb } from 'react-icons/bs';
+import { BiMenu } from 'react-icons/bi';
 
 const HeaderMenu: React.FC<{ title: string; href: string }> = ({
   title,
@@ -41,7 +42,6 @@ export const Header: React.FC = () => {
             <HeaderMenu title="Blog" href="/blog" />
             <HeaderMenu title="Projects" href="/projects" />
             <HeaderMenu title="Course" href="/course" />
-            <HeaderMenu title="Dashboard" href="/dashboard" />
           </div>
           <button onClick={switchTheme} className="text-2xl">
             {theme === 'light' ? <BsLightbulbOff /> : <BsLightbulb />}
@@ -54,20 +54,19 @@ export const Header: React.FC = () => {
           <div className="relative flex justify-end">
             <button
               onClick={() => setOpen(!open)}
-              className="text-lg font-medium"
+              className="text-2xl font-medium"
             >
-              Menu
+              <BiMenu />
             </button>
             {open && (
               <div
                 onClick={() => setOpen(false)}
-                className="bg-bright dark:bg-dark absolute z-40 grid grid-flow-row gap-2 p-2 mt-8 border-2"
+                className="bg-bright dark:bg-dark absolute z-40 grid grid-flow-row gap-2 px-4 py-2 mt-8 border-2"
               >
                 <HeaderMenu title="Home" href="/" />
                 <HeaderMenu title="Blog" href="/blog" />
                 <HeaderMenu title="Projects" href="/projects" />
                 <HeaderMenu title="Course" href="/course" />
-                <HeaderMenu title="Dashboard" href="/dashboard" />
               </div>
             )}
           </div>

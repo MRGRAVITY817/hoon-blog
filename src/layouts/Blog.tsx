@@ -23,7 +23,9 @@ export const BlogLayout: React.FC<{ post?: Blog }> = ({ post, children }) => {
           {post.readingTime['text']}
         </h3>
       </div>
-      <div className="tablet:py-12 py-8 prose">{children}</div>
+      <div className="tablet:py-12 dark:prose-invert py-8 prose">
+        {children}
+      </div>
     </article>
   );
 };

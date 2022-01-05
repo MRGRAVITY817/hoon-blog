@@ -40,7 +40,7 @@ const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
         <title>Hoon Blog</title>
       </Head>
       <h1 className="mb-12">Blog posts</h1>
-      <div className="grid grid-flow-col gap-2 mb-12">
+      <div className="flex flex-wrap gap-2 mb-12">
         {tags.map((tag) => (
           <button
             key={tag}
