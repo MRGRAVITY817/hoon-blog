@@ -12,8 +12,6 @@ export const BlogPreviewCard: React.FC<{ post: Blog }> = ({ post }) => {
             <Image
               src={post.image}
               alt={post.title}
-              width={300}
-              height={150}
               layout="fill"
               objectFit="cover"
               className="rounded-lg"

@@ -1,5 +1,6 @@
 import { allBlogs } from '.contentlayer/data';
 import { BlogPreviewCard } from '@components/BlogPreviewCard';
+import { getNumericDate } from '@utils/time';
 
 export const IndexBlog = () => {
   const posts = allBlogs;
@@ -12,9 +13,9 @@ export const IndexBlog = () => {
             .sort((a, b) => {
               const aDate = new Date(a.publishedAt);
               const bDate = new Date(b.publishedAt);
-              return bDate.getDate() - aDate.getDate();
+              return getNumericDate(bDate) - getNumericDate(aDate);
             })
-            .slice(0, 3)
+            .slice(0, 8)
             .map((post) => (
               <BlogPreviewCard key={post.slug} post={post} />
             ))}
