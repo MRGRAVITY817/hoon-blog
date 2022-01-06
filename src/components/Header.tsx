@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { BsLightbulbOff, BsLightbulb } from 'react-icons/bs';
 import { BiMenu } from 'react-icons/bi';
+import { MobileNav } from './MobileNav';
 
 const HeaderMenu: React.FC<{ title: string; href: string }> = ({
   title,
@@ -35,7 +36,7 @@ export const Header: React.FC = () => {
 
   return (
     <header>
-      <nav className="py-4 border-b-2">
+      <nav className="border-main dark:border-bright tablet:py-4 py-2 border-b-2">
         <div className="tablet:flex tablet:items-center tablet:justify-between hidden">
           <div className="grid grid-flow-col gap-8">
             <HeaderMenu title="Home" href="/" />
@@ -47,29 +48,11 @@ export const Header: React.FC = () => {
             {theme === 'light' ? <BsLightbulbOff /> : <BsLightbulb />}
           </button>
         </div>
-        <div className="tablet:hidden flex justify-between">
+        <div className="tablet:hidden flex items-center justify-between">
           <button onClick={switchTheme} className="text-2xl">
             {theme === 'light' ? <BsLightbulbOff /> : <BsLightbulb />}
           </button>
-          <div className="relative flex justify-end">
-            <button
-              onClick={() => setOpen(!open)}
-              className="text-2xl font-medium"
-            >
-              <BiMenu />
-            </button>
-            {open && (
-              <div
-                onClick={() => setOpen(false)}
-                className="bg-bright dark:bg-dark absolute z-40 grid grid-flow-row gap-2 px-4 py-2 mt-8 border-2"
-              >
-                <HeaderMenu title="Home" href="/" />
-                <HeaderMenu title="Blog" href="/blog" />
-                <HeaderMenu title="Projects" href="/projects" />
-                <HeaderMenu title="Course" href="/course" />
-              </div>
-            )}
-          </div>
+          <MobileNav />
         </div>
       </nav>
     </header>

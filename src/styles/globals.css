@@ -1,3 +1,5 @@
+@import './code.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -12,4 +14,43 @@
   h3 {
     @apply tablet:text-2xl text-xl font-medium;
   }
+  p {
+    @apply tablet:text-lg font-extralight text-base;
+  }
+}
+
+.prose .anchor {
+  @apply absolute invisible;
+
+  margin-left: -1em;
+  padding-right: 0.5em;
+  width: 80%;
+  max-width: 700px;
+  cursor: pointer;
+}
+
+.anchor:hover {
+  @apply visible no-underline;
+}
+
+.prose a {
+  @apply transition-all;
+}
+
+.prose .anchor:after {
+  @apply dark:text-dark text-bright;
+  content: '#';
+}
+
+.prose *:hover > .anchor {
+  @apply visible no-underline;
+}
+
+pre::-webkit-scrollbar {
+  display: none;
+}
+
+pre {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

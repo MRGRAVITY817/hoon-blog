@@ -1,4 +1,4 @@
-import { IndexBlog, IndexIntro } from '@components/index';
+import { IndexBlog, IndexIntro, IndexProjects } from '@components/index';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 
@@ -11,6 +11,7 @@ const Home: NextPage = () => {
       <article className="flex flex-col w-full gap-12">
         <IndexIntro />
         <IndexBlog />
+        <IndexProjects />
       </article>
     </div>
   );

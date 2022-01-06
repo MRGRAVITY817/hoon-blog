@@ -19,8 +19,8 @@ const instagramProfile = 'https://www.instagram.com/coderoundhoon/';
 
 export const Footer = () => {
   return (
-    <footer className="tablet:pt-8 tablet:pb-12 pt-4 pb-6 border-t-2">
-      <div className="tablet:grid-cols-3 grid grid-cols-2">
+    <footer className="tablet:pt-8 tablet:pb-12 border-main dark:border-bright pt-4 pb-6 border-t-2">
+      <div className="laptop:grid-cols-6 tablet:grid-cols-3 grid grid-cols-2">
         <FooterMenu title="Home" href="/" />
         <FooterMenu title="About" href="/about" />
         <FooterMenu title="Blog" href="/blog" />

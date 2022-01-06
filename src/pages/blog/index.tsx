@@ -4,13 +4,15 @@ import { GetStaticProps, NextPage } from 'next';
 import { PostPreview } from 'src/components/PostPreview';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
+import { getNumericDate } from '@utils/time';
+import { getBlogTags } from '@utils/blog';
 
 interface BlogIndexProps {
   posts: Blog[];
 }
 
 const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
-  const tags = ['Life', 'Travel', 'Web', 'Rust', 'Blockchain', 'UI/UX'];
+  const tags = getBlogTags(posts);
   const [searching, setSearching] = useState(false);
   const [tagList, setTagList] = useState<string[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<Blog[]>();
@@ -49,7 +51,7 @@ const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
                 ? setTagList(tagList.filter((t) => t !== tag))
                 : setTagList([tag, ...tagList]);
             }}
-            className={`px-3 py-1 text-sm border-dark dark:border-bright text-bright transition-colors border rounded-full ${
+            className={`px-3 py-1 text-sm border-dark dark:border-bright text-dark transition-colors border rounded-full ${
               tagList.includes(tag)
                 ? `text-bright bg-dark dark:text-dark dark:bg-bright`
                 : `text-dark dark:text-bright`
@@ -83,7 +85,7 @@ const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
                 .sort((a, b) => {
                   const aDate = new Date(a.publishedAt);
                   const bDate = new Date(b.publishedAt);
-                  return bDate.getDate() - aDate.getDate();
+                  return getNumericDate(bDate) - getNumericDate(aDate);
                 })
                 .map((post) => (
                   <PostPreview key={post.slug} post={post} />

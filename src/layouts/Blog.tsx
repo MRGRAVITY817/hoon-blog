@@ -1,4 +1,5 @@
 import { Blog } from '.contentlayer/types';
+import { ClockIcon } from '@heroicons/react/outline';
 
 export const BlogLayout: React.FC<{ post?: Blog }> = ({ post, children }) => {
   if (typeof post === 'undefined') {
@@ -9,19 +10,22 @@ export const BlogLayout: React.FC<{ post?: Blog }> = ({ post, children }) => {
     );
   }
   return (
-    <article className="">
+    <article className="laptop:px-32 flex flex-col items-center justify-start px-12">
       <div className="flex items-start justify-between">
-        <div>
-          <h1 className="laptop:text-6xl tablet:text-4xl mb-4 text-3xl font-bold">
+        <div className="flex flex-col gap-4">
+          <h1 className="laptop:text-6xl tablet:text-4xl text-3xl font-bold">
             {post.title}
           </h1>
+          <div className="tablet:gap-4 flex items-center justify-end gap-2">
+            <ClockIcon className="tablet:w-8 w-6" />
+            <h3 className="font-extralight laptop:text-2xl tablet:text-xl text-lg">
+              {post.readingTime['text']}
+            </h3>
+          </div>
           <h2 className="laptop:text-2xl tablet:text-xl text-lg font-light">
             {post.summary}
           </h2>
         </div>
-        <h3 className="font-extralight laptop:text-2xl tablet:text-xl text-lg">
-          {post.readingTime['text']}
-        </h3>
       </div>
       <div className="tablet:py-12 dark:prose-invert py-8 prose">
         {children}

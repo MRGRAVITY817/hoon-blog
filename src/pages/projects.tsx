@@ -7,7 +7,7 @@ const Projects = () => {
         <title>Projects Hoon</title>
       </Head>
       <div>
-        <h1>This is Projects.</h1>
+        <h1>Work In Progress :)</h1>
       </div>
     </div>
   );

@@ -7,8 +7,8 @@ export const IndexBlog = () => {
   return (
     <section>
       <h1 className="mb-8">Recent Blog Posts</h1>
-      <div className="overflow-auto">
-        <div className="inline-flex flex-row gap-8">
+      <div className="hover:overflow-auto overflow-hidden">
+        <div className="tablet:gap-12 inline-flex flex-row gap-6">
           {posts
             .sort((a, b) => {
               const aDate = new Date(a.publishedAt);
