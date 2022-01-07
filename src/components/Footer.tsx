@@ -1,3 +1,8 @@
+import {
+  IXDF_PROFILE,
+  LINKEDIN_PROFILE,
+  TWITTER_PROFILE
+} from '@utils/constants';
 import Link from 'next/link';
 
 const FooterMenu: React.FC<{ title: string; href: string }> = ({
@@ -6,27 +11,18 @@ const FooterMenu: React.FC<{ title: string; href: string }> = ({
 }) => {
   return (
     <Link href={href}>
-      <a className="tablet:text-xl tablet:mx-4 mx-2 text-lg font-medium">
-        {title}
-      </a>
+      <a className="tablet:text-xl text-lg font-medium">{title}</a>
     </Link>
   );
 };
 
-const twitterProfile = 'https://twitter.com/coderound817';
-const facebookProfile = '';
-const instagramProfile = 'https://www.instagram.com/coderoundhoon/';
-
 export const Footer = () => {
   return (
     <footer className="tablet:pt-8 tablet:pb-12 border-main dark:border-bright pt-4 pb-6 border-t-2">
-      <div className="laptop:grid-cols-6 tablet:grid-cols-3 grid grid-cols-2">
-        <FooterMenu title="Home" href="/" />
-        <FooterMenu title="About" href="/about" />
-        <FooterMenu title="Blog" href="/blog" />
-        <FooterMenu title="Instagram" href={instagramProfile} />
-        <FooterMenu title="Facebook" href={facebookProfile} />
-        <FooterMenu title="Twitter" href={twitterProfile} />
+      <div className="flex flex-row items-center justify-center gap-12">
+        <FooterMenu title="LinkedIn" href={LINKEDIN_PROFILE} />
+        <FooterMenu title="Twitter" href={TWITTER_PROFILE} />
+        <FooterMenu title="IxDF" href={IXDF_PROFILE} />
       </div>
     </footer>
   );

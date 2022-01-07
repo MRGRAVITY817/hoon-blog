@@ -1,3 +1,8 @@
+import {
+  IXDF_PROFILE,
+  LINKEDIN_PROFILE,
+  TWITTER_PROFILE
+} from '@utils/constants';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -20,7 +25,11 @@ export const IndexIntro = () => {
             <h3 className="mb-1">Who am I?</h3>
             <p className="font-extralight">
               My name is <span className="font-medium underline">Hoon Wee</span>
-              , and I am a self-taught software developer.
+              , and I am a freelance software developer.
+            </p>
+            <p>
+              I write blog posts every week, mostly about techs and user
+              experience.
             </p>
           </div>
           <div id="skillset">
@@ -37,15 +46,21 @@ export const IndexIntro = () => {
           <div id="moreaboutme">
             <h3 className="mb-1">More about me</h3>
             <div className="flex gap-4 text-xl">
-              <Link href="https://www.linkedin.com/in/%EC%84%B1%ED%9B%88-wee-44959b189/">
-                <a className="hover:text-travel hover:underline font-normal">
+              <Link href={LINKEDIN_PROFILE}>
+                <a className="hover:text-travel hover:underline font-extralight">
                   LinkedIn
                 </a>
               </Link>
               <p>/</p>
-              <Link href="https://twitter.com/coderound817">
-                <a className="hover:text-travel hover:underline font-normal">
+              <Link href={TWITTER_PROFILE}>
+                <a className="hover:text-travel hover:underline font-extralight">
                   Twitter
+                </a>
+              </Link>
+              <p>/</p>
+              <Link href={IXDF_PROFILE}>
+                <a className="hover:text-travel hover:underline font-extralight">
+                  IxDF
                 </a>
               </Link>
             </div>

@@ -8,7 +8,7 @@ const Home: NextPage = () => {
       <Head>
         <title>{`Hoon's place`}</title>
       </Head>
-      <article className="flex flex-col w-full gap-12">
+      <article className="gap-y-20 flex flex-col w-full">
         <IndexIntro />
         <IndexBlog />
         <IndexProjects />
