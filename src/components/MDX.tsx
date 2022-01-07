@@ -17,7 +17,17 @@ const CustomLink: React.FC<LinkProps> = ({ href, ...props }) => {
 };
 
 const RoundedImage: React.FC<ImageProps> = (props) => {
-  return <Image alt={props.alt} className="rounded-lg" {...props} />;
+  return (
+    <div className="tablet:my-12 h-96 relative w-full my-6">
+      <Image
+        alt={props.alt}
+        layout="fill"
+        objectFit="cover"
+        className="rounded-lg"
+        {...props}
+      />
+    </div>
+  );
 };
 
 const MDXComponents = {
