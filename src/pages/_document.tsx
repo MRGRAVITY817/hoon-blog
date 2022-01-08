@@ -17,7 +17,7 @@ class AppDocument extends Document {
           />
           <link href="/static/favicon.ico" rel="shortcut icon" />
         </Head>
-        <body className="bg-bright dark:bg-dark text-dark dark:text-bright">
+        <body className="bg-bright dark:bg-main text-main dark:text-bright">
           <Main />
           <NextScript />
         </body>

@@ -1,6 +1,5 @@
 import { Blog } from '.contentlayer/types';
-import { CalendarIcon, ClockIcon } from '@heroicons/react/outline';
-import { getPrettyFullDate } from '@utils/time';
+import { PostInfo } from '@components/PostInfo';
 
 export const BlogLayout: React.FC<{ post?: Blog }> = ({ post, children }) => {
   if (typeof post === 'undefined') {
@@ -11,25 +10,15 @@ export const BlogLayout: React.FC<{ post?: Blog }> = ({ post, children }) => {
     );
   }
   return (
-    <article className="laptop:px-32 flex flex-col items-center justify-start px-12">
-      <div className="flex flex-col w-full">
+    <article className="desktop:px-56 laptop:px-28 tablet:px-20 tablet:my-12 flex flex-col items-center justify-start px-4 my-4">
+      <div className="flex flex-col items-start justify-center w-full">
         <h1 className="laptop:text-6xl tablet:text-4xl mb-8 text-3xl font-bold">
           {post.title}
         </h1>
-        <div className="flex items-center justify-start gap-2 mb-2">
-          <CalendarIcon className="w-6" />
-          <p>{getPrettyFullDate(new Date(post.publishedAt))}</p>
-          <p>&bull;</p>
-          <ClockIcon className="w-6" />
-          <p className="text-lg">{post.readingTime['text']}</p>
-        </div>
-        <h2 className="laptop:text-2xl tablet:text-xl text-lg font-light">
-          {post.summary}
-        </h2>
+        <PostInfo post={post} />
+        <h3 className="tablet:mt-8 mt-4 font-light">{post.summary}</h3>
       </div>
-      <div className="tablet:py-12 dark:prose-invert py-8 prose">
-        {children}
-      </div>
+      <div className="dark:prose-invert w-full prose">{children}</div>
     </article>
   );
 };

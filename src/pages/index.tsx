@@ -6,7 +6,7 @@ const Home: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>{`Hoon's place`}</title>
+        <title>{`Hoon Wee`}</title>
       </Head>
       <article className="gap-y-20 flex flex-col w-full">
         <IndexIntro />

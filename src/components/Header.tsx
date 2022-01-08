@@ -42,7 +42,6 @@ export const Header: React.FC = () => {
             <HeaderMenu title="Home" href="/" />
             <HeaderMenu title="Blog" href="/blog" />
             <HeaderMenu title="Projects" href="/projects" />
-            <HeaderMenu title="Course" href="/course" />
           </div>
           <button onClick={switchTheme} className="text-2xl">
             {theme === 'light' ? <BsLightbulbOff /> : <BsLightbulb />}

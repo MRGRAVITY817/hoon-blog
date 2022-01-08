@@ -16,23 +16,47 @@ const CustomLink: React.FC<LinkProps> = ({ href, ...props }) => {
   return <a target="_blank" rel="noopener noreferrer" {...props} />;
 };
 
-const RoundedImage: React.FC<ImageProps> = (props) => {
+const RoundedImage: React.FC<ImageProps & { comment?: string }> = (props) => {
   return (
-    <div className="tablet:my-12 h-96 relative w-full my-6">
-      <Image
-        alt={props.alt}
-        layout="fill"
-        objectFit="cover"
-        className="rounded-lg"
-        {...props}
-      />
+    <div className="tablet:my-12 my-6">
+      <div className={`relative h-96 rounded-lg`}>
+        <Image
+          alt={props.alt}
+          layout="fill"
+          objectFit="cover"
+          className="rounded-lg"
+          {...props}
+        />
+      </div>
+      <p className="my-2 italic">{props.comment}</p>
     </div>
   );
 };
 
+// headings
+const H1: React.FC = ({ children }) => {
+  return <h1 className="font-semibold">{children}</h1>;
+};
+
+const H2: React.FC = ({ children }) => {
+  return <h2 className="font-medium">{children}</h2>;
+};
+
+const H3: React.FC = ({ children }) => {
+  return <h3 className="font-normal">{children}</h3>;
+};
+
+const P: React.FC = ({ children }) => {
+  return <h3 className="font-extralight text-lg">{children}</h3>;
+};
+
 const MDXComponents = {
   a: CustomLink,
-  Image: RoundedImage
+  Image: RoundedImage,
+  h1: H1,
+  h2: H2,
+  h3: H3,
+  p: P
 };
 
 export default MDXComponents;

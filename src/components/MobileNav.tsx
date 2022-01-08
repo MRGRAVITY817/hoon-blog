@@ -31,9 +31,6 @@ export const MobileNav = () => {
             <Menu.Item>
               <MyLink href="/projects">Projects</MyLink>
             </Menu.Item>
-            <Menu.Item>
-              <MyLink href="/course">Course</MyLink>
-            </Menu.Item>
           </Menu.Items>
         </Transition>
       </Menu>

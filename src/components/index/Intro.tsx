@@ -1,7 +1,8 @@
 import {
   IXDF_PROFILE,
   LINKEDIN_PROFILE,
-  TWITTER_PROFILE
+  TWITTER_PROFILE,
+  UPWORK_PROFILE
 } from '@utils/constants';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -21,7 +22,7 @@ export const IndexIntro = () => {
           className="tablet:hidden block col-span-1 rounded-lg"
         />
         <div className="grid grid-flow-row gap-2">
-          <div id="whoami">
+          <div id="who-am-i">
             <h3 className="mb-1">Who am I?</h3>
             <p className="font-extralight">
               My name is <span className="font-medium underline">Hoon Wee</span>
@@ -43,7 +44,7 @@ export const IndexIntro = () => {
               <p>Solana</p>
             </div>
           </div>
-          <div id="moreaboutme">
+          <div id="more-about-me">
             <h3 className="mb-1">More about me</h3>
             <div className="flex gap-4 text-xl">
               <Link href={LINKEDIN_PROFILE}>

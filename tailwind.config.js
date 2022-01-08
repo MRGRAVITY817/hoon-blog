@@ -16,9 +16,9 @@ module.exports = {
         sans: ['Outfit', ...fontFamily.sans]
       },
       colors: {
-        main: '#08434E',
+        main: '#282E3D',
         bright: '#f8f9fa',
-        dark: '#05282F'
+        dark: '#222838'
       }
     }
   },

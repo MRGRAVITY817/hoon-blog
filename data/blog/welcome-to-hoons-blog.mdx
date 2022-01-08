@@ -9,24 +9,39 @@ tags: 'Life,Travel'
 <Image
   alt={`Welcome to my blog!`}
   src={`/static/images/blog/welcome-to-hoons-blog/first.jpg`}
+  comment={`This is Hoon wee.`}
 />
-
 # Hello
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-ut labore et dolore magna aliqua. Velit laoreet id donec ultrices tincidunt arcu
-non sodales neque. Cursus metus aliquam eleifend mi in nulla. Sed faucibus turpis
-in eu mi. Pellentesque habitant morbi tristique senectus et netus et malesuada. Nunc
-sed id semper risus in hendrerit gravida rutrum quisque. Tortor dignissim convallis
-aenean et tortor at risus viverra adipiscing. Dictum varius duis at consectetur lorem
-donec massa sapien. In nulla posuere sollicitudin aliquam ultrices sagittis. Ultricies
-tristique nulla aliquet enim tortor. Pulvinar elementum integer enim neque volutpat
-ac. Egestas fringilla phasellus faucibus scelerisque. Posuere urna nec tincidunt
-praesent semper feugiat nibh. Turpis cursus in hac habitasse platea dictumst quisque
-sagittis purus.
 
 # Code of Rust
 
 ```typescript:lib.ts
 const hello = () => console.log("Hello!");
+```
+
+```css:global.css
+.prose .anchor {
+  @apply absolute invisible;
+
+  margin-left: -1em;
+  padding-right: 0.5em;
+  width: 80%;
+  max-width: 700px;
+  cursor: pointer;
+}
+
+/* comment */
+
+.anchor:hover {
+  @apply visible no-underline;
+}
+```
+
+```rust:main.rs
+async fn main() -> Result<(), Box<dyn Error>> {
+  let hello = String::from("Hello");
+  println!("{}", hello);
+
+  Ok(())
+}
 ```

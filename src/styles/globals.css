@@ -33,6 +33,10 @@
   @apply visible no-underline;
 }
 
+.prose {
+  @apply flex flex-col max-w-full;
+}
+
 .prose a {
   @apply transition-all;
 }
