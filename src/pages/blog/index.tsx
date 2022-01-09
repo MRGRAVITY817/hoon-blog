@@ -16,8 +16,7 @@ const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
   const [searching, setSearching] = useState(false);
   const [tagList, setTagList] = useState<string[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<Blog[]>();
-  // when tag list is empty, it means that user is not using the filter
-  // so turn off the search mode
+
   useEffect(() => {
     tagList.length === 0 ? setSearching(false) : setSearching(true);
   }, [tagList]);
@@ -43,23 +42,25 @@ const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
       </Head>
       <h1 className="mb-12">Blog posts</h1>
       <div className="flex flex-wrap gap-2 mb-12">
-        {tags.map((tag) => (
-          <button
-            key={tag}
-            onClick={() => {
-              tagList.includes(tag)
-                ? setTagList(tagList.filter((t) => t !== tag))
-                : setTagList([tag, ...tagList]);
-            }}
-            className={`px-3 py-1 text-sm border-dark dark:border-bright text-dark transition-colors border rounded-full ${
-              tagList.includes(tag)
-                ? `text-bright bg-dark dark:text-dark dark:bg-bright`
-                : `text-dark dark:text-bright`
-            }`}
-          >
-            {tag}
-          </button>
-        ))}
+        {tags
+          .filter((tag) => tag !== 'Pinned')
+          .map((tag) => (
+            <button
+              key={tag}
+              onClick={() => {
+                tagList.includes(tag)
+                  ? setTagList(tagList.filter((t) => t !== tag))
+                  : setTagList([tag, ...tagList]);
+              }}
+              className={`px-3 py-1 text-sm border-dark dark:border-bright transition-colors border rounded-full ${
+                tagList.includes(tag)
+                  ? `text-bright bg-dark dark:text-dark dark:bg-bright`
+                  : `text-dark dark:text-bright`
+              }`}
+            >
+              {tag}
+            </button>
+          ))}
       </div>
       {searching ? (
         <article className="grid grid-flow-row gap-4">
