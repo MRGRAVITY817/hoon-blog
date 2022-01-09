@@ -1,7 +1,7 @@
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { BsLightbulbOff, BsLightbulb } from 'react-icons/bs';
+import { BsLightbulbOff, BsLightbulb, BsTypeH3 } from 'react-icons/bs';
 import { MobileNav } from './MobileNav';
 
 const HeaderMenu: React.FC<{ title: string; href: string }> = ({
@@ -43,12 +43,24 @@ export const Header: React.FC = () => {
             <HeaderMenu title="Projects" href="/projects" />
           </div>
           <button onClick={switchTheme} className="text-2xl">
-            {theme === 'light' ? <BsLightbulbOff /> : <BsLightbulb />}
+            {typeof theme === 'undefined' ? (
+              <h3>Loading...</h3>
+            ) : theme === 'light' ? (
+              <BsLightbulbOff />
+            ) : (
+              <BsLightbulb />
+            )}
           </button>
         </div>
         <div className="tablet:hidden flex items-center justify-between">
           <button onClick={switchTheme} className="text-2xl">
-            {theme === 'light' ? <BsLightbulbOff /> : <BsLightbulb />}
+            {typeof theme === 'undefined' ? (
+              <h3>Loading...</h3>
+            ) : theme === 'light' ? (
+              <BsLightbulbOff />
+            ) : (
+              <BsLightbulb />
+            )}
           </button>
           <MobileNav />
         </div>
