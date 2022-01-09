@@ -9,7 +9,7 @@ import Document, {
 class AppDocument extends Document {
   render() {
     return (
-      <Html lang="ko">
+      <Html lang="ko" className="scroll-smooth">
         <Head>
           <link
             href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;900&display=swap"

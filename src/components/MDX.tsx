@@ -18,7 +18,7 @@ const CustomLink: React.FC<LinkProps> = ({ href, ...props }) => {
 
 const RoundedImage: React.FC<ImageProps & { comment?: string }> = (props) => {
   return (
-    <div className="tablet:my-12 my-6">
+    <div className="tablet:mt-12 mt-6">
       <div className={`relative h-96 rounded-lg`}>
         <Image
           alt={props.alt}
@@ -35,19 +35,31 @@ const RoundedImage: React.FC<ImageProps & { comment?: string }> = (props) => {
 
 // headings
 const H1: React.FC = ({ children }) => {
-  return <h1 className="font-semibold">{children}</h1>;
+  return (
+    <h1 className="scroll-mt-12 tablet:text-4xl mt-8 mb-4 text-2xl font-semibold">
+      {children}
+    </h1>
+  );
 };
 
 const H2: React.FC = ({ children }) => {
-  return <h2 className="font-medium">{children}</h2>;
+  return (
+    <h2 className="scroll-mt-12 tablet:text-3xl my-2 text-xl font-medium">
+      {children}
+    </h2>
+  );
 };
 
 const H3: React.FC = ({ children }) => {
-  return <h3 className="font-normal">{children}</h3>;
+  return (
+    <h3 className="scroll-mt-12 tablet:text-2xl my-1 text-lg font-normal">
+      {children}
+    </h3>
+  );
 };
 
 const P: React.FC = ({ children }) => {
-  return <h3 className="font-extralight text-lg">{children}</h3>;
+  return <p className="my-[2px] font-extralight text-lg">{children}</p>;
 };
 
 const MDXComponents = {

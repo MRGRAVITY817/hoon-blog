@@ -8,7 +8,7 @@ export const MobileNav = () => {
     <div className="z-50 w-56 text-right">
       <Menu as="div" className="relative inline-block text-left">
         <div>
-          <Menu.Button className="pt-2">
+          <Menu.Button className="pt-2 outline-none">
             <MenuIcon className="w-6" />
           </Menu.Button>
         </div>
@@ -21,7 +21,7 @@ export const MobileNav = () => {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="ring-1 ring-black ring-opacity-5 focus:outline-none absolute right-0 flex flex-col w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg">
+          <Menu.Items className="ring-1 ring-black ring-opacity-5 focus:outline-none bg-bright dark:bg-main absolute right-0 flex flex-col w-56 mt-2 origin-top-right rounded-md shadow-lg">
             <Menu.Item>
               <MyLink href="/">Home</MyLink>
             </Menu.Item>

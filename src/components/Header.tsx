@@ -2,7 +2,6 @@ import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { BsLightbulbOff, BsLightbulb } from 'react-icons/bs';
-import { BiMenu } from 'react-icons/bi';
 import { MobileNav } from './MobileNav';
 
 const HeaderMenu: React.FC<{ title: string; href: string }> = ({

@@ -1,41 +1,42 @@
 ---
-title: 'Welcome to my blog!'
+title: 'Welcome to my blog'
 publishedAt: '2022-01-07'
-summary: 'Great to have you here! Let me tell you how to enjoy by blog even better :)'
+summary: "It's great to have you here!"
 image: '/static/images/blog/welcome-to-hoons-blog/banner.png'
-tags: 'Life,Travel'
+tags: 'General'
 ---
+
+<Image
+  alt={`Welcome to my blog!`}
+  src={`/static/images/profile.jpg`}
+  comment={`This is me. Nice to meet you!`}
+/>
+# Introduction
+
+Hello and welcome to my humble blog! My name is Hoon Wee, and as of
+this year I am a freelance software engineer. I've started my career as a freelancer
+quite recently, but I am enjoying it.{' '}
+
+## What do I build?
+
+I mainly build a web based service for my clients. Building web&mobile application is my major skills.
+
+# What interests me
+
+## Blockchain
+
+Recently I have found myself fallen into blockchain technology, which is a humongous wave in various industry.
+Literally every people around me talks about blockchain related stuffs like NFTs, Smart contracts, DeFi, Web 3.0.
+So actually it was hard not to get interested with it, so I spent several months to study to understand the mechanisms
+and the adaptations of it.
 
 <Image
   alt={`Welcome to my blog!`}
   src={`/static/images/blog/welcome-to-hoons-blog/first.jpg`}
   comment={`This is Hoon wee.`}
 />
-# Hello
 
 # Code of Rust
-
-```typescript:lib.ts
-const hello = () => console.log("Hello!");
-```
-
-```css:global.css
-.prose .anchor {
-  @apply absolute invisible;
-
-  margin-left: -1em;
-  padding-right: 0.5em;
-  width: 80%;
-  max-width: 700px;
-  cursor: pointer;
-}
-
-/* comment */
-
-.anchor:hover {
-  @apply visible no-underline;
-}
-```
 
 ```rust:main.rs
 async fn main() -> Result<(), Box<dyn Error>> {
