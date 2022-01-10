@@ -15,9 +15,14 @@ Here I share my code for building my blog :)
 - [x] Rendering MDX
 - [x] Dark mode
 ## Todo list
-- [ ] Database connection
+- [ ] Projects section
+- [ ] Database connection (Prisma, Supabase)
+- [ ] Sign up & in for visitors
 - [ ] Post comments
+- [ ] Link to other blogging platform (Medium, Brunch, Dev etc)
+- [ ] 'Did you know?' section
 - [ ] WYSIWYG like [Notion](https://notion.so)
+- [ ] Newsletters
 
 ## Tech Stack
 - [Next.js](https://github.com/vercel/next.js/) for building Jam-Stack web.
