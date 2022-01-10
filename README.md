@@ -2,19 +2,22 @@
 Here I share my code for building my blog :)
 
 ## Screenshot
-<details>
-<summary>Main Page - Bright</summary>
+| Main Page - Bright | Blog Post - Dark |
+|--------------------|------------------|
+| ![mainpage](./public/static/images/readme/main_page.png) | ![mainpage](./public/static/images/readme/dark_mode.png) |
 
-![mainpage](./public/static/images/readme/main_page.png)
-
-</details>
-<details>
-<summary>Blog Post - Dark</summary>
-
-![mainpage](./public/static/images/readme/dark_mode.png)
-
-</details>  
-<br/>
+# Features 
+## Currently Available
+- [x] Responsive Design (for desktop, laptop, tablet and mobile)
+- [x] Tagged Posts
+- [x] Post preview
+- [x] Content navigator
+- [x] Rendering MDX
+- [x] Dark mode
+## Todo list
+- [ ] Database connection
+- [ ] Post comments
+- [ ] WYSIWYG like [Notion](https://notion.so)
 
 ## Tech Stack
 - [Next.js](https://github.com/vercel/next.js/) for building Jam-Stack web.
