@@ -4,6 +4,7 @@ import { Blog } from '.contentlayer/types';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 import components from '../../components/MDX';
 import { BlogLayout } from '../../layouts/Blog';
+import Head from 'next/head';
 
 interface PostProps {
   post?: Blog;
@@ -12,15 +13,21 @@ interface PostProps {
 const Post: NextPage<PostProps> = ({ post }) => {
   const Component = useMDXComponent(post?.body.code + '');
   return (
-    <BlogLayout post={post}>
-      <Component
-        components={
-          {
-            ...components
-          } as any
-        }
-      />
-    </BlogLayout>
+    <div>
+      <Head>
+        <title>{`${post?.title + ''} - Hoon Wee`}</title>
+      </Head>
+
+      <BlogLayout post={post}>
+        <Component
+          components={
+            {
+              ...components
+            } as any
+          }
+        />
+      </BlogLayout>
+    </div>
   );
 };
 

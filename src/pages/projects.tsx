@@ -4,7 +4,7 @@ const Projects = () => {
   return (
     <div>
       <Head>
-        <title>Projects Hoon</title>
+        <title>Projects - Hoon Wee</title>
       </Head>
       <div>
         <h1>Work In Progress :)</h1>

@@ -6,7 +6,7 @@ const Home: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>{`Hoon Wee`}</title>
+        <title>{`Home - Hoon Wee`}</title>
       </Head>
       <article className="gap-y-20 laptop:mb-20 tablet:mb-12 flex flex-col w-full mb-8">
         <IndexIntro />

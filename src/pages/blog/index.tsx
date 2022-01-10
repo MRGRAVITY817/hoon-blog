@@ -38,7 +38,7 @@ const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
   return (
     <div>
       <Head>
-        <title>Hoon Blog</title>
+        <title>Blog - Hoon Wee</title>
       </Head>
       <h1 className="mb-12">Blog posts</h1>
       <div className="flex flex-wrap gap-2 mb-12">
