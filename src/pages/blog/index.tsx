@@ -74,7 +74,7 @@ const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
           <section className="grid">
             <h2 className="mb-4">Pinned</h2>
             <PostPreview
-              post={posts.find((post) => post.title === 'Welcome to my blog')!}
+              post={posts.find((post) => post.tags.includes('Pinned'))!}
             />
           </section>
           <section>

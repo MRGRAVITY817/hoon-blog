@@ -14,7 +14,7 @@ export const PostAnchorpoints: React.FC<{
     <div className="">
       <p
         onClick={() => window.scrollTo(0, 0)}
-        className="opacity-70 hover:opacity-100 font-normal transition-opacity cursor-pointer"
+        className="opacity-70 hover:opacity-100 text-xl font-normal transition-opacity cursor-pointer"
       >
         {title}
       </p>
@@ -29,11 +29,11 @@ const PostAnchorpoint: React.FC<{ point: AnchorPoint }> = ({ point }) => {
   const padding = (nodeName: string) => {
     switch (nodeName) {
       case 'H1':
-        return `pl-0 mt-3`;
+        return `pl-0 text-xl mt-3`;
       case 'H2':
-        return `pl-4 mt-1`;
+        return `pl-4 text-lg mt-2`;
       default:
-        return `pl-6`;
+        return `pl-6 text-base leading-5 mt-1`;
     }
   };
 

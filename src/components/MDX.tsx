@@ -13,7 +13,9 @@ const CustomLink: React.FC<LinkProps> = ({ href, ...props }) => {
     );
   }
 
-  return <a target="_blank" rel="noopener noreferrer" {...props} />;
+  return (
+    <a href={href + ''} target="_blank" rel="noopener noreferrer" {...props} />
+  );
 };
 
 const RoundedImage: React.FC<ImageProps & { comment?: string }> = (props) => {
@@ -23,6 +25,7 @@ const RoundedImage: React.FC<ImageProps & { comment?: string }> = (props) => {
         <Image
           alt={props.alt}
           layout="fill"
+          sizes="50vw"
           objectFit="cover"
           className="rounded-lg"
           {...props}

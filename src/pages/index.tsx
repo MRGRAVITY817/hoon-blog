@@ -8,10 +8,10 @@ const Home: NextPage = () => {
       <Head>
         <title>{`Hoon Wee`}</title>
       </Head>
-      <article className="gap-y-20 flex flex-col w-full">
+      <article className="gap-y-20 laptop:mb-20 tablet:mb-12 flex flex-col w-full mb-8">
         <IndexIntro />
         <IndexBlog />
-        <IndexProjects />
+        {/* <IndexProjects /> */}
       </article>
     </div>
   );
