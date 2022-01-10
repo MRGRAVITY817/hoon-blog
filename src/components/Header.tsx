@@ -1,7 +1,7 @@
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { BsLightbulbOff, BsLightbulb, BsTypeH3 } from 'react-icons/bs';
+import { BsLightbulbOff, BsLightbulb } from 'react-icons/bs';
 import { MobileNav } from './MobileNav';
 
 const HeaderMenu: React.FC<{ title: string; href: string }> = ({
@@ -18,8 +18,6 @@ const HeaderMenu: React.FC<{ title: string; href: string }> = ({
 };
 
 export const Header: React.FC = () => {
-  const [open, setOpen] = useState(false);
-
   const [isMounted, setIsMounted] = useState(false);
   const { theme, setTheme } = useTheme();
 
