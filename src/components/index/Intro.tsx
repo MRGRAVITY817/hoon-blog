@@ -1,4 +1,5 @@
 import {
+  GITHUB_PROFILE,
   IXDF_PROFILE,
   LINKEDIN_PROFILE,
   TWITTER_PROFILE
@@ -51,13 +52,17 @@ export const IndexIntro = () => {
               <Link href={LINKEDIN_PROFILE}>
                 <a className="hover:text-travel hover:underline">LinkedIn</a>
               </Link>
-              <p>/</p>
+              <p className="font-extralight">•</p>
               <Link href={TWITTER_PROFILE}>
                 <a className="hover:text-travel hover:underline">Twitter</a>
               </Link>
-              <p>/</p>
+              <p className="font-extralight">•</p>
               <Link href={IXDF_PROFILE}>
                 <a className="hover:text-travel hover:underline">IxDF</a>
+              </Link>
+              <p className="font-extralight">•</p>
+              <Link href={GITHUB_PROFILE}>
+                <a className="hover:text-travel hover:underline">Github</a>
               </Link>
             </div>
           </div>
