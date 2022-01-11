@@ -1,4 +1,5 @@
 import { Blog } from '.contentlayer/types';
+import { Comments } from '@components/Comments';
 import { AnchorPoint, PostAnchorpoints } from '@components/PostAnchorpoints';
 import { PostInfo } from '@components/PostInfo';
 import { PostTagList } from '@components/PostTagList';
@@ -53,6 +54,7 @@ export const BlogLayout: React.FC<{ post?: Blog }> = ({ post, children }) => {
           >
             {children}
           </div>
+          <Comments postId={1} />
         </article>
       </div>
     );

@@ -1,7 +1,5 @@
-import { useTheme } from 'next-themes';
+import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { BsLightbulbOff, BsLightbulb } from 'react-icons/bs';
 import { MobileNav } from './MobileNav';
 
 const HeaderMenu: React.FC<{ title: string; href: string }> = ({
@@ -18,48 +16,49 @@ const HeaderMenu: React.FC<{ title: string; href: string }> = ({
 };
 
 export const Header: React.FC = () => {
-  const [isMounted, setIsMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { data: session, status } = useSession();
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  const switchTheme = () => {
-    if (isMounted) {
-      setTheme(theme === 'light' ? 'dark' : 'light');
+  const signUserOut = async () => {
+    if (window.confirm('Confirm sign out?')) {
+      await signOut();
     }
   };
 
   return (
     <header>
-      <nav className="border-main dark:border-bright tablet:py-4 py-2 border-b-2">
+      <nav
+        id="navigator"
+        className="border-main dark:border-bright tablet:py-4 py-2 border-b-2"
+      >
         <div className="tablet:flex tablet:items-center tablet:justify-between hidden">
           <div className="grid grid-flow-col gap-8">
             <HeaderMenu title="Home" href="/" />
             <HeaderMenu title="Blog" href="/blog" />
             <HeaderMenu title="Projects" href="/projects" />
           </div>
-          <button onClick={switchTheme} className="text-2xl">
-            {typeof theme === 'undefined' ? (
-              <h3>Loading...</h3>
-            ) : theme === 'light' ? (
-              <BsLightbulbOff />
-            ) : (
-              <BsLightbulb />
-            )}
-          </button>
+          <div className="flex gap-8">
+            <div className="flex flex-row items-center gap-6">
+              {status === 'authenticated' && (
+                <p>{`Hello, ${session?.user?.name}`}</p>
+              )}
+              {status === 'authenticated' ? (
+                <button
+                  onClick={signUserOut}
+                  className="bg-main dark:bg-bright text-bright dark:text-main px-3 py-1 rounded-lg"
+                >
+                  Sign out
+                </button>
+              ) : (
+                <Link href={'/auth/signin'}>
+                  <a className="bg-main dark:bg-bright text-bright dark:text-main px-3 py-1 rounded-lg">
+                    Sign in
+                  </a>
+                </Link>
+              )}
+            </div>
+          </div>
         </div>
-        <div className="tablet:hidden flex items-center justify-between">
-          <button onClick={switchTheme} className="text-2xl">
-            {typeof theme === 'undefined' ? (
-              <h3>Loading...</h3>
-            ) : theme === 'light' ? (
-              <BsLightbulbOff />
-            ) : (
-              <BsLightbulb />
-            )}
-          </button>
+        <div className="tablet:hidden flex items-center justify-end">
           <MobileNav />
         </div>
       </nav>

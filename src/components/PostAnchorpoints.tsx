@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 export interface AnchorPoint {
   title: string;
   level: string;
