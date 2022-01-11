@@ -1,8 +1,7 @@
 import {
   IXDF_PROFILE,
   LINKEDIN_PROFILE,
-  TWITTER_PROFILE,
-  UPWORK_PROFILE
+  TWITTER_PROFILE
 } from '@utils/constants';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -19,11 +18,13 @@ export const IndexIntro = () => {
           width={400}
           objectPosition="center"
           objectFit="cover"
-          className="tablet:hidden block col-span-1 rounded-lg"
+          className="rounded-lg"
+          placeholder="blur"
+          blurDataURL="/static/images/profile.jpg"
         />
         <div className="grid grid-flow-row gap-2">
           <div id="who-am-i">
-            <h3 className="mb-1">Who am I?</h3>
+            <h3 className="mb-3">Who am I?</h3>
             <p>
               My name is <span className="font-medium underline">Hoon Wee</span>
               , and I am a freelance software developer.
@@ -34,7 +35,7 @@ export const IndexIntro = () => {
             </p>
           </div>
           <div id="skillset">
-            <h3 className="mb-1">Skillset</h3>
+            <h3 className="mb-3">Skillset</h3>
             <div className="inline-grid grid-flow-row grid-cols-2">
               <p className="font-normal">Programming Language</p>
               <p>Typescript, Rust</p>
@@ -45,24 +46,18 @@ export const IndexIntro = () => {
             </div>
           </div>
           <div id="more-about-me">
-            <h3 className="mb-1">More about me</h3>
+            <h3 className="mb-3">More about me</h3>
             <div className="flex gap-4 text-xl">
               <Link href={LINKEDIN_PROFILE}>
-                <a className="hover:text-travel hover:underline font-extralight">
-                  LinkedIn
-                </a>
+                <a className="hover:text-travel hover:underline">LinkedIn</a>
               </Link>
               <p>/</p>
               <Link href={TWITTER_PROFILE}>
-                <a className="hover:text-travel hover:underline font-extralight">
-                  Twitter
-                </a>
+                <a className="hover:text-travel hover:underline">Twitter</a>
               </Link>
               <p>/</p>
               <Link href={IXDF_PROFILE}>
-                <a className="hover:text-travel hover:underline font-extralight">
-                  IxDF
-                </a>
+                <a className="hover:text-travel hover:underline">IxDF</a>
               </Link>
             </div>
           </div>

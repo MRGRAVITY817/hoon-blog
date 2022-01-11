@@ -27,6 +27,8 @@ export const PostPreview: React.FC<{ post: Blog }> = ({ post }) => {
             height={200}
             objectFit="cover"
             className="w-full h-full rounded-lg"
+            placeholder="blur"
+            blurDataURL={post.image}
           />
         </div>
       </a>

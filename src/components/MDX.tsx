@@ -28,6 +28,8 @@ const RoundedImage: React.FC<ImageProps & { comment?: string }> = (props) => {
           sizes="50vw"
           objectFit="cover"
           className="rounded-lg"
+          placeholder="blur"
+          blurDataURL={props.src + ''}
           {...props}
         />
       </div>

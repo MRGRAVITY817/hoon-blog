@@ -16,6 +16,8 @@ export const BlogPreviewCard: React.FC<{ post: Blog }> = ({ post }) => {
               sizes="50vw"
               objectFit="cover"
               className="rounded-lg"
+              placeholder="blur"
+              blurDataURL={post.image}
             />
           </div>
           <h3>{post.title}</h3>

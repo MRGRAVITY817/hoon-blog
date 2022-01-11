@@ -42,7 +42,7 @@ const PostAnchorpoint: React.FC<{ point: AnchorPoint }> = ({ point }) => {
       onClick={() =>
         document.getElementById(`title-${point.titleId}`)?.scrollIntoView()
       }
-      className={`cursor-pointer opacity-70 hover:opacity-100 transition-opacity ${padding(
+      className={`cursor-pointer opacity-70 hover:opacity-100 font-extralight transition-opacity ${padding(
         point.level
       )}`}
     >
