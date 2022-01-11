@@ -47,7 +47,7 @@ const H1: React.FC = ({ children }) => {
 
 const H2: React.FC = ({ children }) => {
   return (
-    <h2 className="scroll-mt-12 tablet:text-3xl my-2 text-xl font-medium">
+    <h2 className="scroll-mt-12 tablet:text-3xl mt-6 mb-4 text-xl font-medium">
       {children}
     </h2>
   );
@@ -55,14 +55,14 @@ const H2: React.FC = ({ children }) => {
 
 const H3: React.FC = ({ children }) => {
   return (
-    <h3 className="scroll-mt-12 tablet:text-2xl my-1 text-lg font-normal">
+    <h3 className="scroll-mt-12 tablet:text-2xl mt-4 mb-2 text-lg font-normal">
       {children}
     </h3>
   );
 };
 
 const P: React.FC = ({ children }) => {
-  return <p className="my-[2px] leading-8">{children}</p>;
+  return <p className="my-[2px] leading-8 mb-4">{children}</p>;
 };
 
 const MDXComponents = {

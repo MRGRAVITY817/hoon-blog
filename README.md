@@ -23,6 +23,8 @@ Here I share my code for building my blog :)
 - [ ] 'Did you know?' section
 - [ ] WYSIWYG like [Notion](https://notion.so)
 - [ ] Newsletters
+- [ ] View counts
+- [ ] User Dashboards
 
 ## Tech Stack
 - [Next.js](https://github.com/vercel/next.js/) for building Jam-Stack web.
