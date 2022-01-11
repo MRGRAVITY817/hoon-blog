@@ -15,7 +15,7 @@
     @apply tablet:text-2xl text-xl font-medium;
   }
   p {
-    @apply tablet:text-lg font-extralight text-base;
+    @apply tablet:text-xl text-lg font-light;
   }
 }
 

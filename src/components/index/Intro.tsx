@@ -24,7 +24,7 @@ export const IndexIntro = () => {
         <div className="grid grid-flow-row gap-2">
           <div id="who-am-i">
             <h3 className="mb-1">Who am I?</h3>
-            <p className="font-extralight">
+            <p>
               My name is <span className="font-medium underline">Hoon Wee</span>
               , and I am a freelance software developer.
             </p>

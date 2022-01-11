@@ -62,7 +62,7 @@ const H3: React.FC = ({ children }) => {
 };
 
 const P: React.FC = ({ children }) => {
-  return <p className="my-[2px] font-extralight text-lg">{children}</p>;
+  return <p className="my-[2px] leading-8">{children}</p>;
 };
 
 const MDXComponents = {
