@@ -54,6 +54,11 @@ export const BlogLayout: React.FC<{ post?: Blog }> = ({ post, children }) => {
           >
             {children}
           </div>
+          <div className="tablet:my-12 tablet:gap-12 flex items-center justify-center gap-8 my-8">
+            <p className="">•</p>
+            <p className="">•</p>
+            <p className="">•</p>
+          </div>
           <Comments postId={1} />
         </article>
       </div>
