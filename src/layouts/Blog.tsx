@@ -47,19 +47,19 @@ export const BlogLayout: React.FC<{ post?: Blog }> = ({ post, children }) => {
             <PostInfo post={post} />
             <h3 className="tablet:mt-8 mt-4 font-light">{post.summary}</h3>
           </div>
-          <div
-            id="content"
+          <section
+            id="content-section"
             className="dark:prose-invert w-full prose"
             ref={content}
           >
             {children}
-          </div>
+          </section>
           <div className="tablet:my-12 tablet:gap-12 flex items-center justify-center gap-8 my-8">
             <p className="">•</p>
             <p className="">•</p>
             <p className="">•</p>
           </div>
-          <Comments postId={1} />
+          <Comments postId={post.postId} />
         </article>
       </div>
     );

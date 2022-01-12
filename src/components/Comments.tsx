@@ -1,18 +1,23 @@
+import Link from 'next/link';
 import { supabase } from '@utils/database';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import Link from 'next/link';
-import { ReplyIcon, TrashIcon, XIcon } from '@heroicons/react/outline';
+import { ReplyIcon, TrashIcon } from '@heroicons/react/outline';
+
+interface CommentStateParams {
+  id: number;
+  user: string;
+  payload: string;
+  replyOf: number | null;
+}
 
 interface CommentsProps {
   postId: number;
 }
 
 export const Comments: React.FC<CommentsProps> = ({ postId }) => {
-  const [comments, setComments] = useState<
-    { user: string; payload: string; commentId: number }[]
-  >([]);
+  const [comments, setComments] = useState<CommentStateParams[]>([]);
   useEffect(() => {
     const getComments = async () => {
       const { data, error } = await supabase
@@ -21,17 +26,16 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
         .eq('post_id', postId);
 
       if (!error) {
-        const commentList = (data as any[]).map((comment) =>
-          //@ts-ignore
-          {
-            return {
-              user: comment.writer_email,
-              payload: comment.payload,
-              commentId: comment.id
-            };
-          }
-        );
-        setComments(commentList);
+        const commentList = (data as any[]).map((comment) => {
+          return {
+            id: comment.id,
+            user: comment.writer_email,
+            payload: comment.payload,
+            replyOf: comment.reply_of
+          };
+        });
+
+        setComments(commentList as CommentStateParams[]);
       }
     };
     getComments();
@@ -60,26 +64,31 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
       typeof session?.user?.email === 'string' &&
       session.user.email.length > 0
     ) {
-      const { error } = await supabase.from('comments').insert([
-        {
-          writer_email: session.user.email,
-          payload,
-          reply_of: replyContent ? replyContent.commentId : null,
-          post_id: 1
-        }
-      ]);
-      if (!error) {
-        setValue('payload', '');
-      } else {
-        window.alert(error);
+      const { data, error: insertError } = await supabase
+        .from('comments')
+        .insert([
+          {
+            writer_email: session.user.email,
+            payload,
+            reply_of: replyContent?.commentId,
+            post_id: postId
+          }
+        ]);
+
+      if (insertError) {
+        window.alert(`Insert Error: ${insertError}`);
+        return;
       }
+
+      setValue('payload', '');
+      setReplyContent(null);
     }
   };
 
   const { data: session, status } = useSession();
 
   return (
-    <div className="w-full">
+    <section id="comments-section" className="w-full">
       <h1 className="tablet:mb-8 mb-4">Comments</h1>
       {status === 'authenticated' ? (
         <form
@@ -128,14 +137,32 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
         </div>
       )}
       <div className="mt-8">
-        {comments.map(({ user, payload, commentId }, idx) => (
+        {comments.map(({ user, payload, id: commentId, replyOf }) => (
           <div
-            key={`${user}-${idx}`}
-            className="flex flex-col items-start gap-1 py-4"
+            key={`comment-${commentId}`}
+            id={`comment-${commentId}`}
+            className={`scroll-m-4 flex flex-col items-start gap-1 py-1`}
           >
+            {replyOf && (
+              <div
+                onClick={() =>
+                  document
+                    .getElementById(`comment-${replyOf}`)
+                    ?.scrollIntoView()
+                }
+                className="opacity-70 flex items-center justify-start gap-4 cursor-pointer"
+              >
+                <ReplyIcon className="w-4 -rotate-180" />
+                <p className="font-extralight text-base">
+                  {comments
+                    .find((comment) => comment.id === replyOf)
+                    ?.payload.slice(0, 30)}
+                </p>
+              </div>
+            )}
             <p className="font-medium">{user}</p>
             <p className="font-extralight">{payload}</p>
-            <div className="flex gap-4 mt-2">
+            <div className="flex justify-end w-full gap-6 mt-2">
               <ReplyIcon
                 onClick={() => reply(payload, commentId)}
                 className="w-6 -rotate-180 cursor-pointer"
@@ -145,6 +172,6 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
