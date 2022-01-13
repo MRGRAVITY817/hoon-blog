@@ -58,6 +58,16 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
     }
   });
 
+  const deleteComment = async (id: number) => {
+    const ok = window.confirm('Delete comment?');
+    if (ok) {
+      const { error } = await supabase.from('comments').delete().eq('id', id);
+      if (error) {
+        window.alert(`Delete Error: ${error}`);
+      }
+    }
+  };
+
   const onValid = async () => {
     const { payload } = getValues();
     if (
@@ -167,7 +177,12 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
                 onClick={() => reply(payload, commentId)}
                 className="w-6 -rotate-180 cursor-pointer"
               />
-              {session?.user?.email === user && <TrashIcon className="w-6" />}
+              {session?.user?.email === user && (
+                <TrashIcon
+                  onClick={() => deleteComment(commentId)}
+                  className="w-6 cursor-pointer"
+                />
+              )}
             </div>
           </div>
         ))}
