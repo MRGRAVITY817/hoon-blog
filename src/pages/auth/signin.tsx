@@ -19,9 +19,7 @@ const SignIn = ({
         {status === 'authenticated' ? (
           <>
             <ShieldCheckIcon className="tablet:w-1/4 w-1/3 mb-8" />
-            <h2 className="text-center">
-              {session?.user?.name},<br /> you already signed in!
-            </h2>
+            <h2 className="text-center">Hello, {session?.user?.name}</h2>
           </>
         ) : (
           <>

@@ -3,7 +3,7 @@ import { supabase } from '@utils/database';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { ReplyIcon, TrashIcon } from '@heroicons/react/outline';
+import { PencilIcon, ReplyIcon, TrashIcon } from '@heroicons/react/outline';
 
 interface CommentStateParams {
   id: number;
@@ -64,7 +64,36 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
       const { error } = await supabase.from('comments').delete().eq('id', id);
       if (error) {
         window.alert(`Delete Error: ${error}`);
+        return;
       }
+      window.alert('Comment deleted');
+    }
+  };
+
+  const [edit, setEdit] = useState<number | null>(null);
+  const [editPayload, setEditPayload] = useState<string | null>(null);
+  const switchEdit = (id: number, payload: string) => {
+    if (edit !== null) {
+      setEdit(null);
+    } else {
+      setEdit(id);
+      setEditPayload(payload);
+    }
+  };
+  const editComment = async (id: number, payload: string) => {
+    const ok = window.confirm('Edit comment?');
+    if (ok) {
+      const { error } = await supabase
+        .from('comments')
+        .update({ payload })
+        .eq('id', id);
+      if (error) {
+        window.alert(`Edit comment Error: ${error}`);
+        return;
+      }
+      setEdit(null);
+      setEditPayload(null);
+      window.alert('Comment edited');
     }
   };
 
@@ -74,24 +103,23 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
       typeof session?.user?.email === 'string' &&
       session.user.email.length > 0
     ) {
-      const { data, error: insertError } = await supabase
-        .from('comments')
-        .insert([
-          {
-            writer_email: session.user.email,
-            payload,
-            reply_of: replyContent?.commentId,
-            post_id: postId
-          }
-        ]);
+      const { error } = await supabase.from('comments').insert([
+        {
+          writer_email: session.user.email,
+          payload,
+          reply_of: replyContent?.commentId,
+          post_id: postId
+        }
+      ]);
 
-      if (insertError) {
-        window.alert(`Insert Error: ${insertError}`);
+      if (error) {
+        window.alert(`Insert Error: ${error}`);
         return;
       }
 
       setValue('payload', '');
       setReplyContent(null);
+      window.alert('Comment added');
     }
   };
 
@@ -171,17 +199,44 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
               </div>
             )}
             <p className="font-medium">{user}</p>
-            <p className="font-extralight">{payload}</p>
+            {edit === commentId ? (
+              <div className="flex justify-end w-full gap-4 my-1">
+                <input
+                  type="text"
+                  value={editPayload + ''}
+                  onChange={(e) => setEditPayload(e.target.value)}
+                  className="w-full pb-1 bg-transparent border-b outline-none"
+                />
+                <button
+                  onClick={() => editComment(edit, editPayload + '')}
+                  className={`${
+                    editPayload
+                      ? `pointer-events-auto opacity-100`
+                      : `pointer-events-none opacity-70`
+                  }`}
+                >
+                  Edit
+                </button>
+              </div>
+            ) : (
+              <p className="font-extralight">{payload}</p>
+            )}
             <div className="flex justify-end w-full gap-6 mt-2">
               <ReplyIcon
                 onClick={() => reply(payload, commentId)}
                 className="w-6 -rotate-180 cursor-pointer"
               />
               {session?.user?.email === user && (
-                <TrashIcon
-                  onClick={() => deleteComment(commentId)}
-                  className="w-6 cursor-pointer"
-                />
+                <>
+                  <PencilIcon
+                    onClick={() => switchEdit(commentId, payload)}
+                    className="w-6 cursor-pointer"
+                  />
+                  <TrashIcon
+                    onClick={() => deleteComment(commentId)}
+                    className="w-6 cursor-pointer"
+                  />
+                </>
               )}
             </div>
           </div>
