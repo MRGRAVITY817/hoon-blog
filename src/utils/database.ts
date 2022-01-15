@@ -7,6 +7,7 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
 export const supabase = createClient(supabaseUrl + '', supabaseKey + '');
 
 // Comment Request
+
 export const readAllCommentsFetcher = (url: string) =>
   axios.get(url).then((res) => res.data);
 
@@ -19,17 +20,5 @@ export const editCommentRequest = (
   payload: string
 ) => axios.patch(url, { commentId, payload }).then((res) => res.data);
 
-export const deleteCommentRequest = async (url: string, commentId: number) => {
-  try {
-    const { data } = await axios.delete(`${url}?comment_id=${commentId}`);
-    return {
-      data,
-      error: null
-    };
-  } catch (error) {
-    return {
-      data: null,
-      error
-    };
-  }
-};
+export const deleteCommentRequest = (url: string, commentId: number) =>
+  axios.delete(`${url}?comment_id=${commentId}`).then((res) => res.data);
