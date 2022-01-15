@@ -2,8 +2,10 @@ import { Menu, Transition } from '@headlessui/react';
 import { Children, Fragment } from 'react';
 import { MenuIcon } from '@heroicons/react/outline';
 import Link, { LinkProps } from 'next/link';
+import { useSession } from 'next-auth/react';
 
 export const MobileNav = () => {
+  const { data: session } = useSession();
   return (
     <div className="z-50 w-56 text-right">
       <Menu as="div" className="relative inline-block text-left">
@@ -21,7 +23,13 @@ export const MobileNav = () => {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="ring-1 ring-black ring-opacity-5 focus:outline-none bg-bright dark:bg-main absolute right-0 flex flex-col w-56 mt-2 origin-top-right rounded-md shadow-lg">
+          <Menu.Items className="ring-1 ring-black ring-opacity-5 focus:outline-none bg-bright dark:bg-main absolute right-0 flex flex-col w-56 px-4 mt-2 origin-top-right rounded-md shadow-lg">
+            <Menu.Item>
+              <p className="py-2 text-base">Hello, {session?.user?.name}</p>
+            </Menu.Item>
+            <Menu.Item>
+              <hr />
+            </Menu.Item>
             <Menu.Item>
               <MyLink href="/">Home</MyLink>
             </Menu.Item>
@@ -30,6 +38,12 @@ export const MobileNav = () => {
             </Menu.Item>
             <Menu.Item>
               <MyLink href="/projects">Projects</MyLink>
+            </Menu.Item>
+            <Menu.Item>
+              <hr />
+            </Menu.Item>
+            <Menu.Item>
+              <button className="mt-2 mb-4 text-left">Sign out</button>
             </Menu.Item>
           </Menu.Items>
         </Transition>
@@ -43,7 +57,7 @@ const MyLink: React.FC<LinkProps> = ({ href, children, ...rest }) => {
     <Link href={href}>
       <a
         {...rest}
-        className="hover:bg-main hover:text-bright flex items-center justify-start py-2 pl-4 m-1 transition-all rounded-lg"
+        className="hover:bg-main hover:text-bright flex items-center justify-start py-2 transition-all rounded-lg"
       >
         {children}
       </a>

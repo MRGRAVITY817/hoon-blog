@@ -1,15 +1,16 @@
 import Link from 'next/link';
-import { supabase } from '@utils/database';
+import { readAllCommentsFetcher, supabase } from '@utils/database';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { PencilIcon, ReplyIcon, TrashIcon } from '@heroicons/react/outline';
+import useSWR from 'swr';
 
-interface CommentStateParams {
+interface Comments {
   id: number;
-  user: string;
+  writer_email: string;
   payload: string;
-  replyOf: number | null;
+  reply_of: number | null;
 }
 
 interface CommentsProps {
@@ -17,29 +18,11 @@ interface CommentsProps {
 }
 
 export const Comments: React.FC<CommentsProps> = ({ postId }) => {
-  const [comments, setComments] = useState<CommentStateParams[]>([]);
-  useEffect(() => {
-    const getComments = async () => {
-      const { data, error } = await supabase
-        .from('comments')
-        .select('*')
-        .eq('post_id', postId);
-
-      if (!error) {
-        const commentList = (data as any[]).map((comment) => {
-          return {
-            id: comment.id,
-            user: comment.writer_email,
-            payload: comment.payload,
-            replyOf: comment.reply_of
-          };
-        });
-
-        setComments(commentList as CommentStateParams[]);
-      }
-    };
-    getComments();
-  }, [postId]);
+  // TODO: Handle error from getting comments
+  const { data: comments, error } = useSWR<Comments[]>(
+    `/api/comments/${postId}`,
+    readAllCommentsFetcher
+  );
 
   const [replyContent, setReplyContent] = useState<{
     comment: string;
@@ -174,73 +157,86 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
           </Link>
         </div>
       )}
-      <div className="mt-8">
-        {comments.map(({ user, payload, id: commentId, replyOf }) => (
-          <div
-            key={`comment-${commentId}`}
-            id={`comment-${commentId}`}
-            className={`scroll-m-4 flex flex-col items-start gap-1 py-1`}
-          >
-            {replyOf && (
-              <div
-                onClick={() =>
-                  document
-                    .getElementById(`comment-${replyOf}`)
-                    ?.scrollIntoView()
-                }
-                className="opacity-70 flex items-center justify-start gap-4 cursor-pointer"
-              >
-                <ReplyIcon className="w-4 -rotate-180" />
-                <p className="font-extralight text-base">
-                  {comments
-                    .find((comment) => comment.id === replyOf)
-                    ?.payload.slice(0, 30)}
-                </p>
-              </div>
-            )}
-            <p className="font-medium">{user}</p>
-            {edit === commentId ? (
-              <div className="flex justify-end w-full gap-4 my-1">
-                <input
-                  type="text"
-                  value={editPayload + ''}
-                  onChange={(e) => setEditPayload(e.target.value)}
-                  className="w-full pb-1 bg-transparent border-b outline-none"
-                />
-                <button
-                  onClick={() => editComment(edit, editPayload + '')}
-                  className={`${
-                    editPayload
-                      ? `pointer-events-auto opacity-100`
-                      : `pointer-events-none opacity-70`
-                  }`}
+      <div className="mt-2">
+        {typeof comments !== 'undefined' &&
+          comments
+            .sort((a, b) => a.id - b.id)
+            .map(
+              (
+                {
+                  writer_email: user,
+                  payload,
+                  id: commentId,
+                  reply_of: replyOf
+                },
+                idx
+              ) => (
+                <div
+                  key={`comment-${commentId}`}
+                  id={`comment-${commentId}`}
+                  className={`scroll-m-4 flex flex-col items-start gap-1 py-8`}
                 >
-                  Edit
-                </button>
-              </div>
-            ) : (
-              <p className="font-extralight">{payload}</p>
+                  {replyOf && (
+                    <div
+                      onClick={() =>
+                        document
+                          .getElementById(`comment-${replyOf}`)
+                          ?.scrollIntoView()
+                      }
+                      className="opacity-70 flex items-center justify-start gap-4 cursor-pointer"
+                    >
+                      <ReplyIcon className="w-4 -rotate-180" />
+                      <p className="font-extralight text-base">
+                        {comments
+                          .find((comment) => comment.id === replyOf)
+                          ?.payload.slice(0, 30)}
+                      </p>
+                    </div>
+                  )}
+                  <p className="font-medium">{user}</p>
+                  {edit === commentId ? (
+                    <div className="flex justify-end w-full gap-4 my-1">
+                      <input
+                        type="text"
+                        value={editPayload + ''}
+                        onChange={(e) => setEditPayload(e.target.value)}
+                        className="w-full pb-1 bg-transparent border-b outline-none"
+                      />
+                      <button
+                        onClick={() => editComment(edit, editPayload + '')}
+                        className={`${
+                          editPayload
+                            ? `pointer-events-auto opacity-100`
+                            : `pointer-events-none opacity-70`
+                        }`}
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="font-extralight">{payload}</p>
+                  )}
+                  <div className="flex justify-end w-full gap-6 mt-2">
+                    <ReplyIcon
+                      onClick={() => reply(payload, commentId)}
+                      className="w-6 -rotate-180 cursor-pointer"
+                    />
+                    {session?.user?.email === user && (
+                      <>
+                        <PencilIcon
+                          onClick={() => switchEdit(commentId, payload)}
+                          className="w-6 cursor-pointer"
+                        />
+                        <TrashIcon
+                          onClick={() => deleteComment(commentId)}
+                          className="w-6 cursor-pointer"
+                        />
+                      </>
+                    )}
+                  </div>
+                </div>
+              )
             )}
-            <div className="flex justify-end w-full gap-6 mt-2">
-              <ReplyIcon
-                onClick={() => reply(payload, commentId)}
-                className="w-6 -rotate-180 cursor-pointer"
-              />
-              {session?.user?.email === user && (
-                <>
-                  <PencilIcon
-                    onClick={() => switchEdit(commentId, payload)}
-                    className="w-6 cursor-pointer"
-                  />
-                  <TrashIcon
-                    onClick={() => deleteComment(commentId)}
-                    className="w-6 cursor-pointer"
-                  />
-                </>
-              )}
-            </div>
-          </div>
-        ))}
       </div>
     </section>
   );

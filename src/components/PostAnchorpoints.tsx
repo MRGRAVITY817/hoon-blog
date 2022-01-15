@@ -19,6 +19,14 @@ export const PostAnchorpoints: React.FC<{
       {points.map((point, index) => (
         <PostAnchorpoint key={point.title + index.toString()} point={point} />
       ))}
+      <p
+        onClick={() =>
+          document.getElementById('comments-section')?.scrollIntoView()
+        }
+        className="opacity-70 hover:opacity-100 mt-3 text-xl font-normal transition-opacity cursor-pointer"
+      >
+        Comments
+      </p>
     </div>
   );
 };
