@@ -22,6 +22,16 @@ const ReadComments = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(500).json({ message: postError.message });
       }
       return res.status(200).json(postData);
+    case 'PATCH':
+      const { commentId, payload } = req.body;
+      const { data: patchData, error: patchError } = await supabase
+        .from('comments')
+        .update({ payload })
+        .eq('id', commentId);
+      if (patchError) {
+        return res.status(500).json({ message: patchError.message });
+      }
+      return res.status(200).json(patchData);
     default:
       return res.status(405).json({
         message: 'Method Not Allowed'

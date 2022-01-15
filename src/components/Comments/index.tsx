@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import {
   addCommentRequest,
+  editCommentRequest,
   readAllCommentsFetcher,
   supabase
 } from '@utils/database';
@@ -46,45 +47,6 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
     }
   });
 
-  const deleteComment = async (id: number) => {
-    const ok = window.confirm('Delete comment?');
-    if (ok) {
-      const { error } = await supabase.from('comments').delete().eq('id', id);
-      if (error) {
-        window.alert(`Delete Error: ${error}`);
-        return;
-      }
-      window.alert('Comment deleted');
-    }
-  };
-
-  const [edit, setEdit] = useState<number | null>(null);
-  const [editPayload, setEditPayload] = useState<string | null>(null);
-  const switchEdit = (id: number, payload: string) => {
-    if (edit !== null) {
-      setEdit(null);
-    } else {
-      setEdit(id);
-      setEditPayload(payload);
-    }
-  };
-  const editComment = async (id: number, payload: string) => {
-    const ok = window.confirm('Edit comment?');
-    if (ok) {
-      const { error } = await supabase
-        .from('comments')
-        .update({ payload })
-        .eq('id', id);
-      if (error) {
-        window.alert(`Edit comment Error: ${error}`);
-        return;
-      }
-      setEdit(null);
-      setEditPayload(null);
-      window.alert('Comment edited');
-    }
-  };
-
   const { mutate } = useSWRConfig();
   const addComment = async () => {
     const { payload } = getValues();
@@ -110,6 +72,58 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
         setReplyContent(null);
         window.alert('Comment added');
       }
+    }
+  };
+
+  const [edit, setEdit] = useState<number | null>(null);
+  const [editPayload, setEditPayload] = useState<string | null>(null);
+  const switchEdit = (id: number, payload: string) => {
+    if (edit !== null) {
+      setEdit(null);
+    } else {
+      setEdit(id);
+      setEditPayload(payload);
+    }
+  };
+  const editComment = async (id: number, payload: string) => {
+    const ok = window.confirm('Edit comment?');
+    if (ok) {
+      try {
+        // Modify cache before actually adding comment
+        mutate(
+          commentsUrl,
+          comments?.map((comment) => {
+            if (comment.id === id) {
+              return { ...comment, payload };
+            }
+            return comment;
+          }),
+          false
+        );
+        // Send request for adding a comment
+        await editCommentRequest(commentsUrl, id, payload);
+        // Trigger revalidation to make sure local data is correct
+        mutate(commentsUrl);
+        // Reset form
+        setEdit(null);
+        setEditPayload(null);
+        window.alert('Comment edited');
+      } catch (error) {
+        window.alert(`Edit comment Error: ${error}`);
+        return;
+      }
+    }
+  };
+
+  const deleteComment = async (id: number) => {
+    const ok = window.confirm('Delete comment?');
+    if (ok) {
+      const { error } = await supabase.from('comments').delete().eq('id', id);
+      if (error) {
+        window.alert(`Delete Error: ${error}`);
+        return;
+      }
+      window.alert('Comment deleted');
     }
   };
 

@@ -12,3 +12,9 @@ export const readAllCommentsFetcher = (url: string) =>
 
 export const addCommentRequest = (url: string, comment: any) =>
   axios.post(url, { comment }).then((res) => res.data);
+
+export const editCommentRequest = (
+  url: string,
+  commentId: number,
+  payload: string
+) => axios.patch(url, { commentId, payload }).then((res) => res.data);
