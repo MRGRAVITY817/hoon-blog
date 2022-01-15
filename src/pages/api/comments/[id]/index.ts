@@ -23,15 +23,27 @@ const ReadComments = async (req: NextApiRequest, res: NextApiResponse) => {
       }
       return res.status(200).json(postData);
     case 'PATCH':
-      const { commentId, payload } = req.body;
+      const { commentId: editcommentId, payload } = req.body;
       const { data: patchData, error: patchError } = await supabase
         .from('comments')
         .update({ payload })
-        .eq('id', commentId);
+        .eq('id', editcommentId);
       if (patchError) {
         return res.status(500).json({ message: patchError.message });
       }
       return res.status(200).json(patchData);
+    case 'DELETE':
+      const { comment_id: deleteCommentId } = req.query;
+      if (typeof deleteCommentId === 'string') {
+        const { data: deleteData, error: deleteError } = await supabase
+          .from('comments')
+          .delete()
+          .eq('id', deleteCommentId + '');
+        if (deleteError) {
+          return res.status(500).json({ message: deleteError.message });
+        }
+        return res.status(200).json(deleteData);
+      }
     default:
       return res.status(405).json({
         message: 'Method Not Allowed'

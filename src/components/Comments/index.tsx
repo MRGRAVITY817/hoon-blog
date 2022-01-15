@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import {
   addCommentRequest,
+  deleteCommentRequest,
   editCommentRequest,
-  readAllCommentsFetcher,
-  supabase
+  readAllCommentsFetcher
 } from '@utils/database';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
@@ -16,6 +16,7 @@ interface Comments {
   writer_email: string;
   payload: string;
   reply_of: number | null;
+  created_at: string;
 }
 
 interface CommentsProps {
@@ -118,12 +119,23 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
   const deleteComment = async (id: number) => {
     const ok = window.confirm('Delete comment?');
     if (ok) {
-      const { error } = await supabase.from('comments').delete().eq('id', id);
-      if (error) {
+      try {
+        mutate(
+          commentsUrl,
+          comments?.filter((comment) => comment.id !== id),
+          false
+        );
+        const { data, error } = await deleteCommentRequest(commentsUrl, id);
+        if (error) {
+          console.log(error);
+          return;
+        }
+        mutate(commentsUrl);
+        window.alert('Comment deleted');
+      } catch (error) {
         window.alert(`Delete Error: ${error}`);
         return;
       }
-      window.alert('Comment deleted');
     }
   };
 
@@ -181,21 +193,23 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
       <div className="mt-2">
         {typeof comments !== 'undefined' &&
           comments
-            .sort((a, b) => a.id - b.id)
+            .sort((a, b) => {
+              const aDate = new Date(a.created_at);
+              const bDate = new Date(b.created_at);
+              // @ts-ignore
+              return aDate - bDate;
+            })
             .map(
-              (
-                {
-                  writer_email: user,
-                  payload,
-                  id: commentId,
-                  reply_of: replyOf
-                },
-                idx
-              ) => (
+              ({
+                writer_email: user,
+                payload,
+                id: commentId,
+                reply_of: replyOf
+              }) => (
                 <div
                   key={`comment-${commentId}`}
                   id={`comment-${commentId}`}
-                  className={`scroll-m-4 flex flex-col items-start gap-1 py-8`}
+                  className={`scroll-m-4 flex flex-col items-start gap-1 py-4`}
                 >
                   {replyOf && (
                     <div
@@ -210,7 +224,8 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
                       <p className="font-extralight text-base">
                         {comments
                           .find((comment) => comment.id === replyOf)
-                          ?.payload.slice(0, 30)}
+                          ?.payload.slice(0, 30) ||
+                          '[Comment you replied has been deleted]'}
                       </p>
                     </div>
                   )}

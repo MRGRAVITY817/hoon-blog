@@ -18,3 +18,18 @@ export const editCommentRequest = (
   commentId: number,
   payload: string
 ) => axios.patch(url, { commentId, payload }).then((res) => res.data);
+
+export const deleteCommentRequest = async (url: string, commentId: number) => {
+  try {
+    const { data } = await axios.delete(`${url}?comment_id=${commentId}`);
+    return {
+      data,
+      error: null
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error
+    };
+  }
+};
