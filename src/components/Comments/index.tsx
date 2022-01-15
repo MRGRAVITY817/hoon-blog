@@ -1,10 +1,14 @@
 import Link from 'next/link';
-import { readAllCommentsFetcher, supabase } from '@utils/database';
+import {
+  addCommentRequest,
+  readAllCommentsFetcher,
+  supabase
+} from '@utils/database';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { PencilIcon, ReplyIcon, TrashIcon } from '@heroicons/react/outline';
-import useSWR from 'swr';
+import useSWR, { Key, useSWRConfig } from 'swr';
 
 interface Comments {
   id: number;
@@ -18,9 +22,10 @@ interface CommentsProps {
 }
 
 export const Comments: React.FC<CommentsProps> = ({ postId }) => {
+  const commentsUrl: Key = `/api/comments/${postId}`;
   // TODO: Handle error from getting comments
-  const { data: comments, error } = useSWR<Comments[]>(
-    `/api/comments/${postId}`,
+  const { data: comments, error: commentError } = useSWR<Comments[]>(
+    commentsUrl,
     readAllCommentsFetcher
   );
 
@@ -80,40 +85,42 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
     }
   };
 
-  const onValid = async () => {
+  const { mutate } = useSWRConfig();
+  const addComment = async () => {
     const { payload } = getValues();
     if (
       typeof session?.user?.email === 'string' &&
       session.user.email.length > 0
     ) {
-      const { error } = await supabase.from('comments').insert([
-        {
-          writer_email: session.user.email,
-          payload,
-          reply_of: replyContent?.commentId,
-          post_id: postId
-        }
-      ]);
-
-      if (error) {
-        window.alert(`Insert Error: ${error}`);
-        return;
+      const newComment = {
+        writer_email: session.user.email,
+        payload,
+        reply_of: replyContent?.commentId,
+        post_id: postId
+      };
+      if (typeof comments !== 'undefined') {
+        // Modify cache before actually adding comment
+        mutate(commentsUrl, [...comments, newComment], false);
+        // Send request for adding a comment
+        await addCommentRequest(commentsUrl, newComment);
+        // Trigger revalidation to make sure local data is correct
+        mutate(commentsUrl);
+        // Reset form
+        setValue('payload', '');
+        setReplyContent(null);
+        window.alert('Comment added');
       }
-
-      setValue('payload', '');
-      setReplyContent(null);
-      window.alert('Comment added');
     }
   };
 
   const { data: session, status } = useSession();
 
   return (
-    <section id="comments-section" className="w-full">
+    <section id="comments-section" className="scroll-m-8 w-full">
       <h1 className="tablet:mb-8 mb-4">Comments</h1>
       {status === 'authenticated' ? (
         <form
-          onSubmit={handleSubmit(onValid)}
+          onSubmit={handleSubmit(addComment)}
           className="scroll-m-4"
           id="comment-form"
         >
@@ -193,7 +200,27 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
                       </p>
                     </div>
                   )}
-                  <p className="font-medium">{user}</p>
+                  <div className="flex items-center justify-between w-full">
+                    <p className="font-medium">{user}</p>
+                    <div className="flex justify-end w-full gap-6 mt-2">
+                      <ReplyIcon
+                        onClick={() => reply(payload, commentId)}
+                        className="w-6 -rotate-180 cursor-pointer"
+                      />
+                      {session?.user?.email === user && (
+                        <>
+                          <PencilIcon
+                            onClick={() => switchEdit(commentId, payload)}
+                            className="w-6 cursor-pointer"
+                          />
+                          <TrashIcon
+                            onClick={() => deleteComment(commentId)}
+                            className="w-6 cursor-pointer"
+                          />
+                        </>
+                      )}
+                    </div>
+                  </div>
                   {edit === commentId ? (
                     <div className="flex justify-end w-full gap-4 my-1">
                       <input
@@ -216,24 +243,6 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
                   ) : (
                     <p className="font-extralight">{payload}</p>
                   )}
-                  <div className="flex justify-end w-full gap-6 mt-2">
-                    <ReplyIcon
-                      onClick={() => reply(payload, commentId)}
-                      className="w-6 -rotate-180 cursor-pointer"
-                    />
-                    {session?.user?.email === user && (
-                      <>
-                        <PencilIcon
-                          onClick={() => switchEdit(commentId, payload)}
-                          className="w-6 cursor-pointer"
-                        />
-                        <TrashIcon
-                          onClick={() => deleteComment(commentId)}
-                          className="w-6 cursor-pointer"
-                        />
-                      </>
-                    )}
-                  </div>
                 </div>
               )
             )}
