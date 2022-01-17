@@ -34,7 +34,7 @@ export const BlogLayout: React.FC<{ post?: Blog }> = ({ post, children }) => {
     );
   } else {
     return (
-      <div className="flex flex-col items-center justify-start w-full px-4 my-4">
+      <div className="tablet:px-4 flex flex-col items-center justify-start w-full px-2 my-4">
         <article className="desktop:w-[700px] laptop:w-[500px] w-full">
           <div className="top-32 desktop:right-20 laptop:right-5 laptop:block w-80 fixed hidden p-8 rounded-lg">
             <PostAnchorpoints points={points} title={post.title} />

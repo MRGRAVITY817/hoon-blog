@@ -1,11 +1,41 @@
 import { Menu, Transition } from '@headlessui/react';
-import { Children, Fragment } from 'react';
+import { Fragment } from 'react';
 import { MenuIcon } from '@heroicons/react/outline';
 import Link, { LinkProps } from 'next/link';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
+import { useSetRecoilState } from 'recoil';
+import { ToastState } from 'src/states/toastStates';
 
 export const MobileNav = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const setToast = useSetRecoilState(ToastState);
+  const signUserOut = async () => {
+    setToast({
+      isOpen: true,
+      messageType: 'confirm',
+      message: 'Sign out?',
+      confirm: async () => {
+        try {
+          await signOut();
+          setToast({
+            isOpen: true,
+            messageType: 'ok',
+            message: 'Signed user out',
+            confirm: undefined
+          });
+          return;
+        } catch (error) {
+          setToast({
+            isOpen: true,
+            messageType: 'error',
+            message: 'Failed to sign out',
+            confirm: undefined
+          });
+          return;
+        }
+      }
+    });
+  };
   return (
     <div className="z-50 w-56 text-right">
       <Menu as="div" className="relative inline-block text-left">
@@ -23,10 +53,16 @@ export const MobileNav = () => {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="ring-1 ring-black ring-opacity-5 focus:outline-none bg-bright dark:bg-main absolute right-0 flex flex-col w-56 px-4 mt-2 origin-top-right rounded-md shadow-lg">
-            <Menu.Item>
-              <p className="py-2 text-base">Hello, {session?.user?.name}</p>
-            </Menu.Item>
+          <Menu.Items className="ring-1 ring-black ring-opacity-5 focus:outline-none bg-bright dark:bg-main absolute right-0 flex flex-col w-56 gap-4 px-4 py-4 mt-2 origin-top-right rounded-md shadow-lg">
+            {status === 'unauthenticated' ? (
+              <Menu.Item>
+                <MyLink href="/auth/signin">Sign In</MyLink>
+              </Menu.Item>
+            ) : (
+              <Menu.Item>
+                <p className="text-base">Hello, {session?.user?.name}</p>
+              </Menu.Item>
+            )}
             <Menu.Item>
               <hr />
             </Menu.Item>
@@ -39,12 +75,16 @@ export const MobileNav = () => {
             <Menu.Item>
               <MyLink href="/projects">Projects</MyLink>
             </Menu.Item>
-            <Menu.Item>
-              <hr />
-            </Menu.Item>
-            <Menu.Item>
-              <button className="mt-2 mb-4 text-left">Sign out</button>
-            </Menu.Item>
+            {status === 'authenticated' && (
+              <>
+                <Menu.Item>
+                  <hr />
+                </Menu.Item>
+                <Menu.Button as="button" className={`text-left`}>
+                  <button onClick={() => signUserOut()}>Sign out</button>
+                </Menu.Button>
+              </>
+            )}
           </Menu.Items>
         </Transition>
       </Menu>
@@ -57,7 +97,7 @@ const MyLink: React.FC<LinkProps> = ({ href, children, ...rest }) => {
     <Link href={href}>
       <a
         {...rest}
-        className="hover:bg-main hover:text-bright flex items-center justify-start py-2 transition-all rounded-lg"
+        className="hover:bg-main hover:text-bright flex items-center justify-start transition-all rounded-lg"
       >
         {children}
       </a>

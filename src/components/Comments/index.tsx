@@ -10,6 +10,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { PencilIcon, ReplyIcon, TrashIcon } from '@heroicons/react/outline';
 import useSWR, { Key, useSWRConfig } from 'swr';
+import { useRecoilState } from 'recoil';
+import { ToastState } from 'src/states/toastStates';
 
 interface Comments {
   id: number;
@@ -24,6 +26,7 @@ interface CommentsProps {
 }
 
 export const Comments: React.FC<CommentsProps> = ({ postId }) => {
+  const [toast, setToast] = useRecoilState(ToastState);
   const commentsUrl: Key = `/api/comments/${postId}`;
   // TODO: Handle error from getting comments
   const { data: comments, error: commentError } = useSWR<Comments[]>(
@@ -71,7 +74,11 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
         // Reset form
         setValue('payload', '');
         setReplyContent(null);
-        window.alert('Comment added');
+        setToast({
+          isOpen: true,
+          messageType: 'ok',
+          message: 'Comment Added'
+        });
       }
     }
   };
@@ -86,57 +93,99 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
       setEditPayload(payload);
     }
   };
-  const editComment = async (id: number, payload: string) => {
-    const ok = window.confirm('Edit comment?');
-    if (ok) {
-      try {
-        // Modify cache before actually adding comment
-        mutate(
-          commentsUrl,
-          comments?.map((comment) => {
-            if (comment.id === id) {
-              return { ...comment, payload };
-            }
-            return comment;
-          }),
-          false
-        );
-        // Send request for adding a comment
-        await editCommentRequest(commentsUrl, id, payload);
-        // Trigger revalidation to make sure local data is correct
-        mutate(commentsUrl);
-        // Reset form
-        setEdit(null);
-        setEditPayload(null);
-        window.alert('Comment edited');
-      } catch (error) {
-        window.alert(`Edit comment Error: ${error}`);
-        return;
-      }
+  const editComment = async (
+    id: number,
+    payload: string,
+    prevPayload: string
+  ) => {
+    if (payload === prevPayload) {
+      setToast({
+        isOpen: true,
+        messageType: 'warning',
+        message: 'Comment unchanged'
+      });
+      return;
     }
+    setToast({
+      isOpen: true,
+      messageType: 'confirm',
+      message: 'Edit comment?',
+      confirm: async () => {
+        try {
+          // Modify cache before actually adding comment
+          mutate(
+            commentsUrl,
+            comments?.map((comment) => {
+              if (comment.id === id) {
+                return { ...comment, payload };
+              }
+              return comment;
+            }),
+            false
+          );
+          // Send request for adding a comment
+          await editCommentRequest(commentsUrl, id, payload);
+          // Trigger revalidation to make sure local data is correct
+          mutate(commentsUrl);
+          // Reset form
+          setEdit(null);
+          setEditPayload(null);
+          setToast({
+            isOpen: true,
+            messageType: 'ok',
+            message: 'Comment Edited'
+          });
+          return;
+        } catch (error) {
+          setToast({
+            isOpen: true,
+            messageType: 'error',
+            message: 'Failed to edit comment'
+          });
+          return;
+        }
+      }
+    });
   };
 
   const deleteComment = async (id: number) => {
-    const ok = window.confirm('Delete comment?');
-    if (ok) {
-      try {
-        mutate(
-          commentsUrl,
-          comments?.filter((comment) => comment.id !== id),
-          false
-        );
-        const { data, error } = await deleteCommentRequest(commentsUrl, id);
-        if (error) {
-          console.log(error);
+    setToast({
+      isOpen: true,
+      messageType: 'confirm',
+      message: 'Delete comment?',
+      confirm: async () => {
+        try {
+          mutate(
+            commentsUrl,
+            comments?.filter((comment) => comment.id !== id),
+            false
+          );
+          const { error } = await deleteCommentRequest(commentsUrl, id);
+          if (error) {
+            setToast({
+              isOpen: true,
+              messageType: 'error',
+              message: 'Failed to delete comment'
+            });
+            return;
+          }
+          mutate(commentsUrl);
+          setToast({
+            isOpen: true,
+            messageType: 'ok',
+            message: 'Comment Deleted'
+          });
+          return;
+        } catch (error) {
+          setToast({
+            isOpen: true,
+            messageType: 'error',
+            message: 'Failed to delete comment'
+          });
           return;
         }
-        mutate(commentsUrl);
-        window.alert('Comment deleted');
-      } catch (error) {
-        window.alert(`Delete Error: ${error}`);
-        return;
       }
-    }
+    });
   };
 
   const { data: session, status } = useSession();
@@ -231,7 +280,7 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
                   )}
                   <div className="flex items-center justify-between w-full">
                     <p className="font-medium">{user}</p>
-                    <div className="flex justify-end w-full gap-6 mt-2">
+                    <div className="tablet:flex justify-end hidden w-full gap-6 mt-2">
                       <ReplyIcon
                         onClick={() => reply(payload, commentId)}
                         className="w-6 -rotate-180 cursor-pointer"
@@ -259,7 +308,9 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
                         className="w-full pb-1 bg-transparent border-b outline-none"
                       />
                       <button
-                        onClick={() => editComment(edit, editPayload + '')}
+                        onClick={() =>
+                          editComment(edit, editPayload + '', payload)
+                        }
                         className={`${
                           editPayload
                             ? `pointer-events-auto opacity-100`
@@ -272,6 +323,24 @@ export const Comments: React.FC<CommentsProps> = ({ postId }) => {
                   ) : (
                     <p className="font-extralight">{payload}</p>
                   )}
+                  <div className="tablet:hidden flex justify-start w-full gap-6 mt-2">
+                    <ReplyIcon
+                      onClick={() => reply(payload, commentId)}
+                      className="w-6 -rotate-180 cursor-pointer"
+                    />
+                    {session?.user?.email === user && (
+                      <>
+                        <PencilIcon
+                          onClick={() => switchEdit(commentId, payload)}
+                          className="w-6 cursor-pointer"
+                        />
+                        <TrashIcon
+                          onClick={() => deleteComment(commentId)}
+                          className="w-6 cursor-pointer"
+                        />
+                      </>
+                    )}
+                  </div>
                 </div>
               )
             )}
