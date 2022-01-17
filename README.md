@@ -11,14 +11,15 @@ Here I share my code for building my blog :)
 - [x] Responsive Design (for desktop, laptop, tablet and mobile)
 - [x] Tagged Posts
 - [x] Post preview
-- [x] Content navigator
+- [x] Content navigator with smooth scrolling
 - [x] Rendering MDX
 - [x] Dark mode
+- [x] Database connection (Supabase)
+- [x] Sign up & in for visitors
+- [x] Read/Add/Edit/Delete/Reply comments
+- [x] Toast!
 ## Todo list
 - [ ] Projects section
-- [ ] Database connection (Prisma, Supabase)
-- [ ] Sign up & in for visitors
-- [ ] Post comments
 - [ ] Link to other blogging platform (Medium, Brunch, Dev etc)
 - [ ] 'Did you know?' section
 - [ ] WYSIWYG like [Notion](https://notion.so)
