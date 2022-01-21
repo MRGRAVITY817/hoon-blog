@@ -71,9 +71,11 @@ Add these 2 lines in `pages/index.tsx`.
 
 ```tsx:pages/index.tsx
 ...
+// Added start
 import { createClient } from "@supabase/supabase-js";
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
+// Added end
 
 const Home: NextPage = () => {
   return (
@@ -125,10 +127,12 @@ Since we can use our env vars now, add and edit the following lines in `pages/in
 ...
 import { createClient } from "@supabase/supabase-js";
 
+// Added start
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY ?? "";
+// Added edited
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createClient(supabaseUrl, supabaseKey); // Edited
 
 const Home: NextPage = () => {
   return (
@@ -153,6 +157,7 @@ The code change will be as following.
 ```tsx:pages/index.tsx
 ...
 const Home: NextPage = () => {
+  // Added start
   const [comment, setComment] = useState<string>("");
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -164,10 +169,11 @@ const Home: NextPage = () => {
     event.preventDefault();
 		console.log(comment);
   };
+  // Added end
 ...
-		<form onSubmit={onSubmit} className="mt-8 flex gap-8">
+		<form onSubmit={onSubmit} className="mt-8 flex gap-8"> {/* Edited */}
 			<input
-				onChange={onChange}
+				onChange={onChange} {/* Edited */}
 				type="text"
 				placeholder="Add a comment"
 				className="p-2 border-b focus:border-b-gray-700 w-full outline-none"
