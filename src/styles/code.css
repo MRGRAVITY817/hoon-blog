@@ -18,7 +18,9 @@
   @apply p-0 text-gray-200;
   border: initial;
 }
-.token.comment,
+.token.comment {
+  @apply text-gray-500;
+}
 .token.prolog,
 .token.doctype,
 .token.cdata {
