@@ -21,7 +21,7 @@ export const BlogPreviewCard: React.FC<{ post: Blog }> = ({ post }) => {
             />
           </div>
           <h3>{post.title}</h3>
-          <div className="grid justify-start grid-flow-col gap-2">
+          <div className="flex flex-wrap gap-2">
             {post.tags.split(',').map((tag) => (
               <PostTag key={`${post.title}-${tag}`} tag={tag} />
             ))}
