@@ -6,7 +6,7 @@ import { PostTag } from 'src/components/PostTag';
 export const PostPreview: React.FC<{ post: Blog }> = ({ post }) => {
   return (
     <Link href={`/blog/${post.slug}`}>
-      <a className="hover:scale-[98%] flex items-start justify-between w-full py-2 transition-all">
+      <a className="hover:scale-[98%] flex items-start justify-between gap-4 w-full py-2 transition-all">
         <div className="tablet:w-3/4 grid w-full grid-flow-row gap-1">
           <h3 className="mb-2">{post.title}</h3>
           <div className="grid justify-start grid-flow-col gap-2 mb-4">
