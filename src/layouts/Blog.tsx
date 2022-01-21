@@ -49,7 +49,7 @@ export const BlogLayout: React.FC<{ post?: Blog }> = ({ post, children }) => {
           </div>
           <section
             id="content-section"
-            className="dark:prose-invert w-full prose"
+            className="dark:prose-invert w-full py-6 prose"
             ref={content}
           >
             {children}

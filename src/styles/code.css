@@ -1,5 +1,5 @@
 .rehype-code-title {
-  @apply border-bright text-bright bg-main dark:bg-dark px-5 py-2 font-mono text-sm font-medium border border-b-0 rounded-t-lg;
+  @apply border-bright text-bright bg-main dark:bg-dark px-5 py-2 font-mono text-sm font-bold border border-b-0 rounded-t-lg;
 }
 
 .rehype-code-title + pre {

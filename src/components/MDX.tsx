@@ -14,26 +14,34 @@ const CustomLink: React.FC<LinkProps> = ({ href, ...props }) => {
   }
 
   return (
-    <a href={href + ''} target="_blank" rel="noopener noreferrer" {...props} />
+    <a
+      href={href + ''}
+      className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+      target="_blank"
+      rel="noopener noreferrer"
+      {...props}
+    />
   );
 };
 
-const RoundedImage: React.FC<ImageProps & { comment?: string }> = (props) => {
+const RoundedImage: React.FC<ImageProps & { comment?: string }> = ({
+  comment,
+  ...props
+}) => {
   return (
-    <div className="tablet:mt-12 mt-6">
-      <div className={`relative h-96 rounded-lg`}>
+    <div className="mt-2">
+      <div className={`relative`}>
         <Image
-          alt={props.alt}
-          layout="fill"
-          sizes="50vw"
           objectFit="cover"
-          className="rounded-lg"
+          className="tablet:rounded-lg rounded-md shadow-md"
           placeholder="blur"
           blurDataURL={props.src + ''}
+          alt={props.alt}
+          width={1000}
           {...props}
         />
       </div>
-      <p className="my-2 italic">{props.comment}</p>
+      <p className="my-2 italic text-center">{comment}</p>
     </div>
   );
 };

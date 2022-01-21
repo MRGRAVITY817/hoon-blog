@@ -14,8 +14,12 @@
   h3 {
     @apply tablet:text-2xl text-xl font-medium;
   }
+  li,
   p {
     @apply tablet:text-xl text-lg font-light;
+  }
+  ul {
+    @apply mb-4;
   }
 }
 

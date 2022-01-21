@@ -1,0 +1,222 @@
+---
+title: 'Build comments section with Next.js, SWR and Supabase - Part 0. Getting Started'
+publishedAt: '2022-01-19'
+summary: "We'll learn how to build a comments section that with awesome Next.js + SWR + Supabase"
+image: '/static/images/blog/comment-tutorial/intro.png'
+tags: 'Web,NextJS,Supabase,SWR'
+postId: 1
+---
+
+<Image
+  alt={`Dark mode comments section`}
+  src={'/static/images/blog/comment-tutorial/commentsIntro.png'}
+  comment={`Yeah all the cool kids use this stack!`}
+  height={500}
+/>
+
+# Let's build our own comments section because... why not?
+
+Hi yall folks! In this series, we will use sexy combination - Next.js + SWR + Supbase - to build a comment section, just like my blog's comment sections has down below.
+
+## Our goal
+
+Just like every good-old Todo list tutorials, we will build simple **CRUD**(**C**reate, **R**ead, **U**pdate and **D**elete) features for our comments.
+
+- Adding comments
+- Reading comments
+- Editing comments
+- Deleting comments
+- Replying to comments
+
+<Image
+  alt={`Dark mode comments section`}
+  src={'/static/images/blog/comment-tutorial/intro.png'}
+  comment={`That toast component is optional for this tutorial, but you can see how I made it in my blog repo.`}
+  height={500}
+/>
+
+## What do we need?
+
+Obviously, we'll be using those three:
+
+- [Next.js](https://nextjs.org/): Probably the best production-ready frontend framework in this planet
+- [SWR](https://swr.vercel.app/): Super-easy data fetching/caching library
+- [Supabase](https://supabase.com/): Trendy BaaS(Backend as a Service) product for PostgreSQL lovers
+
+And also my favorite CSS framework, the [TailwindCSS](https://tailwindcss.com/).
+
+# Local Settting: Next.js and TailwindCSS
+
+## Create Next App
+
+We'll first create a basic Typescript-based Next.js application using `npx create-next-app`.
+
+```bash:Terminal
+$ npx create-next-app --typescript supabase-comments
+```
+
+When the project is created, head to the files directory and you'll see those basic files.
+We won't be needing all of them, so we'll remove some of them.
+
+```bash:Project
+...node_modules
+├── package.json
+├── pages
+│   ├── _app.tsx
+│   ├── api
+│   │   └── hello.ts
+│   └── index.tsx
+├── public              # <- Remove
+│   ├── favicon.ico     # <- Remove
+│   └── vercel.svg      # <- Remove
+├── styles
+│   ├── Home.module.css # <- Remove
+│   └── globals.css
+├── tsconfig.json
+└── yarn.lock
+```
+
+## Add TailwindCSS for NextJS
+
+Above done, then we'll add TailwindCSS & other dependencies for our styling.
+
+```bash:Terminal
+$ yarn add -D tailwindcss postcss autoprefixer
+$ yarn tailwindcss init -p
+```
+
+The last command will create `tailwindcss.config.js` file, which is a config javascript file for TailwindCSS.
+This simple file does a lot, but right now we'll just define which files should TailwindCSS watch for.
+
+```javascript:tailwindcss.config.js
+module.exports = {
+  content: [
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+
+And then, replace contents in `styles/globals.css` with the code down below.
+
+```css:styles/globals.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+Now we can properly use our TailwindCSS with NextJS!
+To test if it works, replace the contents in `pages/index.tsx` with the code down below.
+
+```tsx:pages/index.tsx
+import type { NextPage } from "next";
+import Head from "next/head";
+
+const Home: NextPage = () => {
+  return (
+    <div>
+      <Head>
+        <title>Comments Page</title>
+      </Head>
+      <div className="p-12">
+        <h1 className="text-2xl font-bold">Comments!</h1>
+      </div>
+    </div>
+  );
+};
+
+export default Home;
+```
+
+Run the following command to serve web page in development environment,
+
+```bash:Terminal
+$ yarn dev
+```
+
+... and head to http://localhost:3000 to see the bold typed **Comments!** in the blank web page.
+
+Well done! We are done with our local settings(except SWR, but we'll install it later), so let's head to remote setting.
+
+# Remote Setting: Supabase
+
+## Create an organization and a project
+
+Head to [official Supabase website](https://supabase.com/) and sign in with your Github account.
+
+Then it will lead you to the app dashboard.
+Click `New Project` and then click `+ New Organization` to create your new project team.
+(If you already have an organization, feel free to skip creating one)
+
+Then it will tell you to create a new name for your organization. Just type any cool name, and hit `Create organization`.
+
+<Image
+  alt={`Create new organization`}
+  src={'/static/images/blog/comment-tutorial/create-org.png'}
+  comment={`Pick a nice looking name :)`}
+  height={400}
+/>
+
+Now for the organization we've just created, we'll create a new project which will contain SQL tables.
+
+1. Name: I'll just name it "Master Supabase", but the naming doesn't matter.
+2. Database Password: For the password, try using passgen tool to create a strong one. I normally create one from [PassGen.co](https://passgen.co/), with length longer than 14.
+3. Region: Choose the nearest place where you live(as for me, Seoul).
+4. Pricing Plan: Choose 'Free tier', but you can upgrade later if you want.
+
+Once finished the form, hit `Create new project`.
+
+<Image
+  alt={`Create new project`}
+  src={'/static/images/blog/comment-tutorial/create-project.png'}
+  comment={`Project in Supabase is just a PostgreSQL database, packed with cool backend features.`}
+  height={1000}
+/>
+
+And now we have our brand new Supabase project! Feel free to explore around, discover what you can do.
+
+## Create `comments` table
+
+Now we will make a SQL table called `comments`. To do that click a 'Table editor' menu in left panel of the dashboard.
+If your project is new, the there will be no tables in it. Let's hit `Create a new table`.
+
+Then it will show you a side panel to insert form for your table's settings.
+
+1. Name: `comments`, but feel free to choose other name.
+2. Description: This is optional, and I am gonna skip it this time.
+3. Enable Row Level Security: This is a fancy feature in Supabase, but we'll discover it my later post. Now we just skip it.
+4. Columns: We'll edit & add several columns like the image below.<br />Make sure you **change the type of 'id'** column into uuid!
+
+<Image
+  alt={`Create new table`}
+  src={'/static/images/blog/comment-tutorial/create-table.png'}
+  comment={``}
+  height={1000}
+/>
+
+If you've finished and confirmed the form, hit `Save` button.
+
+Now we have our comments table! Let me explain each table columns' role :
+
+- `id`: An unique identifier of the column.
+- `created_at`: We'll use this to sort our comments in created order.
+- `updated_at`: We'll use this and `created_at`'s difference to tell if the comment has been edited.
+- `username`: This will be used to indicate user who wrote the comment.
+- `payload`: Actual content of the comment.
+- `reply_of`: I will save the comment's id that we are replying to.
+
+# Summary
+
+In this post we've set the development environment,
+
+- A NextJS application, with Typescript and TailwindCSS settings
+- A Supabase comment table to create/edit/read/delete our comments
+
+In the next post, we'll dive in to the actual CRUD features with our comments.
+We'll use awesome `@supabase/supabase-js` node library to interact with our comments table.
+
+Until then, Happy coding!
