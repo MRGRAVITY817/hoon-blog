@@ -15,7 +15,8 @@ If you hadn't read the Part 1, checkout [here](https://hoonwee.com/blog/comment-
 Last time we've created our Typescript based NextJS app and installed TailwindCSS for easy styling.
 Then we headed to Supabase dashboard to create our own PostgreSQL comments table.
 
-In this chapter we will create, read, update, and delete our comments with our comments form.
+In this chapter we will create and read comments with our comments form.
+The follow-along code can be found [here.](https://github.com/MRGRAVITY817/supabse-comments/tree/part-2)
 
 # Create comment
 
@@ -335,6 +336,65 @@ Now check our web page. It will look much like other comment sections!
   comment={`It now looks very functional.`}
   height={1000}
 />
+
+## Sort comments by created order
+
+Now our Supabase client takes the comment list in `created` order,
+but soon after when we edit and reply to some of the comments it would bring them by `updated` order.
+
+So we should do a little tweak in our code to sort them.
+
+```tsx:pages/index.tsx
+
+...
+
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY + "";
+
+export const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Add start
+export const getNumericDate = (date: Date) => {
+  const day = date.getDate();
+  const month = date.getMonth();
+  const year = date.getFullYear();
+  const bigHour = (day + month * 12 + year * 365) * 24;
+
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  const second = date.getSeconds();
+  const ms = date.getMilliseconds();
+  const smallHour = (ms * 0.001 + second + minute * 60 + hour * 3600) / 3600;
+
+  return bigHour + smallHour;
+};
+// Add end
+
+...
+
+          <div className="flex flex-col gap-4 pt-12">
+            {commentList
+            {/* Add start */}
+              .sort((a, b) => {
+                const aDate = new Date(a.created_at);
+                const bDate = new Date(b.created_at);
+                return getNumericDate(aDate) - getNumericDate(bDate);
+              })
+            {/* Add end */}
+              .map((comment) => (
+                <div key={comment.id} className="border rounded-md p-4">
+                  <p className="font-semibold mb-2">{comment.username}</p>
+
+...
+
+```
+
+Breaking this down:
+
+- We added a utility function `getNumericDate` to take quantitive value out from `Date` type data.
+- We added `.sort` before doing `.map` in comment list rendering part.
+  - The logic inside `.sort` will arrange from the oldest to the youngest.
+
+With correct logic, sorting in Typescript is just a piece of cake.
 
 # Summary
 
