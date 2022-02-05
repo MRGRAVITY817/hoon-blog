@@ -67,6 +67,11 @@
 .token.variable {
   @apply text-yellow-500;
 }
+
+.highlight-line {
+  @apply bg-white/10 px-2 py-1 rounded-sm;
+}
+
 code[class*='language-'],
 pre[class*='language-'] {
   @apply dark:text-gray-50 text-gray-800;
