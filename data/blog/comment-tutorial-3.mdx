@@ -325,14 +325,12 @@ Let's think how our reply feature would work best:
 
 Alrighty, as always let's work with the UI part first.
 
-```tsx:pages/index.tsx
+```tsx:pages/index.tsx {5, 13-23, 29-34, 41-43}
 
 ...
 
   const [editComment, setEditComment] = useState<EditCommentParams>({ id: "", payload: "" });
-  // Add start
   const [replyOf, setReplyOf] = useState<string | null>(null);
-  // Add end
 
   const onChangeEditComment = (event: ChangeEvent<HTMLInputElement>) => {
 
@@ -340,7 +338,6 @@ Alrighty, as always let's work with the UI part first.
 
     <h1 className="text-4xl font-bold ">Comments</h1>
     <form onSubmit={onSubmit} className="mt-8 flex gap-8">
-      {/* Change Start */}
       <div className="w-full">
       {replyOf && (
         <div className="flex gap-4 my-2 items-center justify-start">
@@ -352,19 +349,16 @@ Alrighty, as always let's work with the UI part first.
           </button>
         </div>
       )}
-      {/* Change end */}
 
 ...
 
     .map((comment) => (
       <div key={comment.id} className="border rounded-md p-4">
-        {/* Add Start */}
         {comment.reply_of &&
           <p className="font-extralight italic text-gray-600 text-xs">
             Reply of: {commentList.find((c) => c.id === comment.reply_of)?.payload ?? ""}
           </p>
         }
-        {/* Add End */}
         <p className="font-semibold mb-2">
           {comment.username}
 
@@ -372,11 +366,9 @@ Alrighty, as always let's work with the UI part first.
 
             Delete
           </button>
-          {/* Add Start */}
           <button type="button" onClick={() => setReplyOf(comment.id)} className="text-orange-500">
             Reply
           </button>
-          {/* Add End */}
         </>
       )}
     </div>

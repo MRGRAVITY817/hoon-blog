@@ -70,13 +70,11 @@ $ yarn add @supabase/supabase-js
 Now we need to create a supabase client object, which is a messenger that will help us interact with Supabase.
 Add these 2 lines in `pages/index.tsx`.
 
-```tsx:pages/index.tsx
+```tsx:pages/index.tsx {2-4}
 ...
-// Added start
 import { createClient } from "@supabase/supabase-js";
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
-// Added end
 
 const Home: NextPage = () => {
   return (
@@ -124,16 +122,14 @@ the development server, so go to terminal and kill the current session with `CTR
 
 Since we can use our env vars now, add and edit the following lines in `pages/index.tsx`.
 
-```tsx:pages/index.tsx
+```tsx:pages/index.tsx {4-5, 7}
 ...
 import { createClient } from "@supabase/supabase-js";
 
-// Added start
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY ?? "";
-// Added edited
 
-export const supabase = createClient(supabaseUrl, supabaseKey); // Edited
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
 const Home: NextPage = () => {
   return (
@@ -155,10 +151,9 @@ To do that,
 
 The code change will be as following.
 
-```tsx:pages/index.tsx
+```tsx:pages/index.tsx {3-13, 15, 17}
 ...
 const Home: NextPage = () => {
-  // Added start
   const [comment, setComment] = useState<string>("");
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -170,11 +165,10 @@ const Home: NextPage = () => {
     event.preventDefault();
 		console.log(comment);
   };
-  // Added end
 ...
-		<form onSubmit={onSubmit} className="mt-8 flex gap-8"> {/* Edited */}
+		<form onSubmit={onSubmit} className="mt-8 flex gap-8">
 			<input
-				onChange={onChange} {/* Edited */}
+				onChange={onChange}
 				type="text"
 				placeholder="Add a comment"
 				className="p-2 border-b focus:border-b-gray-700 w-full outline-none"
@@ -250,11 +244,10 @@ To do that we'll do following steps:
 
 First we should add some UI for the list! Add the following code in `pages/index.tsx`.
 
-```tsx:pages/index.tsx
+```tsx:pages/index.tsx {4-11, 14-15, 20-27}
 ...
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Added start
 interface CommentParams {
   id: string;
   created_at: string;
@@ -263,18 +256,14 @@ interface CommentParams {
   payload: string;
   reply_of?: string;
 }
-// Added end
 
 const Home: NextPage = () => {
-  // Added start
   const [comment, setComment] = useState<string>("");
   const [commentList, setCommentList] = useState<CommentParams[]>([]);
-  // Added end
 ...
           Submit
         </button>
       </form>
-      // Added start
       <div className="flex flex-col gap-4 pt-12">
         {commentList.map((comment) => (
           <div key={comment.id} className="border rounded-md p-4">
@@ -283,7 +272,6 @@ const Home: NextPage = () => {
           </div>
         ))}
       </div>
-      // Added end
     </div>
 ...
 ```
@@ -303,11 +291,10 @@ Before moving to next step, I want you to add more comments using our form
 Once you've done adding more comments, now let add a new function called `getCommentList` that will use `supabase` client to
 get all the comments. Add the code down below.
 
-```tsx:pages/index.tsx
+```tsx:pages/index.tsx {4-15}
 ...
   const [commentList, setCommentList] = useState<CommentParams[]>([]);
 
-  // Added start
   const getCommentList = async () => {
     const { data, error } = await supabase.from("comments").select("*");
     if (!error && data) {
@@ -320,7 +307,6 @@ get all the comments. Add the code down below.
   useEffect(() => {
     getCommentList();
   }, []);
-  // Added end
 ...
 ```
 
@@ -344,7 +330,7 @@ but soon after when we edit and reply to some of the comments it would bring the
 
 So we should do a little tweak in our code to sort them.
 
-```tsx:pages/index.tsx
+```tsx:pages/index.tsx {8-21, 27-31}
 
 ...
 
@@ -352,7 +338,6 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY + "";
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Add start
 export const getNumericDate = (date: Date) => {
   const day = date.getDate();
   const month = date.getMonth();
@@ -367,19 +352,16 @@ export const getNumericDate = (date: Date) => {
 
   return bigHour + smallHour;
 };
-// Add end
 
 ...
 
           <div className="flex flex-col gap-4 pt-12">
             {commentList
-            {/* Add start */}
               .sort((a, b) => {
                 const aDate = new Date(a.created_at);
                 const bDate = new Date(b.created_at);
                 return getNumericDate(aDate) - getNumericDate(bDate);
               })
-            {/* Add end */}
               .map((comment) => (
                 <div key={comment.id} className="border rounded-md p-4">
                   <p className="font-semibold mb-2">{comment.username}</p>
