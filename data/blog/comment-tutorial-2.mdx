@@ -330,29 +330,7 @@ but soon after when we edit and reply to some of the comments it would bring the
 
 So we should do a little tweak in our code to sort them.
 
-```tsx:pages/index.tsx {8-21, 27-31}
-
-...
-
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY + "";
-
-export const supabase = createClient(supabaseUrl, supabaseKey);
-
-export const getNumericDate = (date: Date) => {
-  const day = date.getDate();
-  const month = date.getMonth();
-  const year = date.getFullYear();
-  const bigHour = (day + month * 12 + year * 365) * 24;
-
-  const hour = date.getHours();
-  const minute = date.getMinutes();
-  const second = date.getSeconds();
-  const ms = date.getMilliseconds();
-  const smallHour = (ms * 0.001 + second + minute * 60 + hour * 3600) / 3600;
-
-  return bigHour + smallHour;
-};
-
+```tsx:pages/index.tsx {5-9}
 ...
 
           <div className="flex flex-col gap-4 pt-12">
@@ -360,7 +338,7 @@ export const getNumericDate = (date: Date) => {
               .sort((a, b) => {
                 const aDate = new Date(a.created_at);
                 const bDate = new Date(b.created_at);
-                return getNumericDate(aDate) - getNumericDate(bDate);
+                return +aDate - +bDate;
               })
               .map((comment) => (
                 <div key={comment.id} className="border rounded-md p-4">
@@ -372,9 +350,10 @@ export const getNumericDate = (date: Date) => {
 
 Breaking this down:
 
-- We added a utility function `getNumericDate` to take quantitive value out from `Date` type data.
 - We added `.sort` before doing `.map` in comment list rendering part.
-  - The logic inside `.sort` will arrange from the oldest to the youngest.
+- The logic inside `.sort` will arrange from the oldest to the youngest.
+- The `+` sign at the beginning of `aDate` and `bDate` is for casting `Date` type to
+  `number` type, since Typescript's `sort()`'s return value has to be in `number` type.
 
 With correct logic, sorting in Typescript is just a piece of cake.
 

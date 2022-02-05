@@ -84,7 +84,7 @@ const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
                 .sort((a, b) => {
                   const aDate = new Date(a.publishedAt);
                   const bDate = new Date(b.publishedAt);
-                  return getNumericDate(bDate) - getNumericDate(aDate);
+                  return +bDate - +aDate;
                 })
                 .map((post) => (
                   <PostPreview key={post.slug} post={post} />
