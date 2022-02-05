@@ -13,7 +13,7 @@ export const IndexBlog = () => {
             .sort((a, b) => {
               const aDate = new Date(a.publishedAt);
               const bDate = new Date(b.publishedAt);
-              return getNumericDate(bDate) - getNumericDate(aDate);
+              return +bDate - +aDate;
             })
             .slice(0, 8)
             .map((post) => (
