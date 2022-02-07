@@ -40,9 +40,7 @@ export const BlogLayout: React.FC<{ post?: Blog }> = ({ post, children }) => {
             <PostAnchorpoints points={points} title={post.title} />
           </div>
           <div className="flex flex-col items-start justify-center w-full">
-            <h1 className="laptop:text-6xl tablet:text-4xl inline mb-8 text-3xl font-bold">
-              {post.title}
-            </h1>
+            <h1 className="inline mb-8 font-bold">{post.title}</h1>
             <PostTagList post={post} />
             <PostInfo post={post} />
             <h3 className="tablet:mt-8 mt-4 font-light">{post.summary}</h3>

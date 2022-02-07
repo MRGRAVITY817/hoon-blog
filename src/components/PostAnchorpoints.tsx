@@ -35,11 +35,10 @@ const PostAnchorpoint: React.FC<{ point: AnchorPoint }> = ({ point }) => {
   const padding = (nodeName: string) => {
     switch (nodeName) {
       case 'H1':
-        return `pl-0 text-xl mt-3`;
       case 'H2':
-        return `pl-4 text-lg mt-2`;
+        return `pl-0 text-xl mt-3`;
       default:
-        return `pl-6 text-base leading-5 mt-1`;
+        return `pl-4 text-lg mt-2`;
     }
   };
 

@@ -14,11 +14,11 @@ postId: 1
   height={500}
 />
 
-# Let's build our own comments section because... why not?
+## Let's build our own comments section because... why not?
 
-Hi yall folks! In this series, we will use sexy combination - Next.js + Supbase - to build a comment section, just like my blog's comment sections has down below.
+Hi yall folks! In this series, we will use sexy combination - Next.js + Supabase - to build a comment section, just like my blog's comment sections has down below.
 
-## Our goal
+### Our goal
 
 Just like every good-old Todo list tutorials, we will build simple **CRUD**(**C**reate, **R**ead, **U**pdate and **D**elete) features for our comments.
 
@@ -37,7 +37,7 @@ Just like every good-old Todo list tutorials, we will build simple **CRUD**(**C*
 
 The follow-along code can be found [here.](https://github.com/MRGRAVITY817/supabse-comments/tree/part-1)
 
-## What do we need?
+### What do we need?
 
 Obviously, we'll be using those three:
 
@@ -49,9 +49,9 @@ And also some extras that will make our project super-easy:
 - [TailwindCSS](https://tailwindcss.com/): CSS library that will make styling super-easy.
 - [SWR](https://swr.vercel.app/): Super-simple data fetching/caching library
 
-# Local Settting: Next.js and TailwindCSS
+## Local Settting: Next.js and TailwindCSS
 
-## Create Next App
+### Create Next App
 
 We'll first create a basic Typescript-based Next.js application using `npx create-next-app`.
 
@@ -70,17 +70,17 @@ We won't be needing all of them, so we'll remove some of them.
 │   ├── api
 │   │   └── hello.ts
 │   └── index.tsx
-├── public              # <- Remove
-│   ├── favicon.ico     # <- Remove
-│   └── vercel.svg      # <- Remove
+├── public              ## <- Remove
+│   ├── favicon.ico     ## <- Remove
+│   └── vercel.svg      ## <- Remove
 ├── styles
-│   ├── Home.module.css # <- Remove
+│   ├── Home.module.css ## <- Remove
 │   └── globals.css
 ├── tsconfig.json
 └── yarn.lock
 ```
 
-## Add TailwindCSS for NextJS
+### Add TailwindCSS for NextJS
 
 Above done, then we'll add TailwindCSS & other dependencies for our styling.
 
@@ -146,9 +146,9 @@ $ yarn dev
 
 Well done! We are done with our local settings(except SWR, but we'll install it later), so let's head to remote setting.
 
-# Remote Setting: Supabase
+## Remote Setting: Supabase
 
-## Create an organization and a project
+### Create an organization and a project
 
 Head to [official Supabase website](https://supabase.com/) and sign in with your Github account.
 
@@ -183,7 +183,7 @@ Once finished the form, hit `Create new project`.
 
 And now we have our brand new Supabase project! Feel free to explore around, discover what you can do.
 
-## Create `comments` table
+### Create `comments` table
 
 Now we will make a SQL table called `comments`. To do that click a 'Table editor' menu in left panel of the dashboard.
 If your project is new, the there will be no tables in it. Let's hit `Create a new table`.
@@ -213,7 +213,7 @@ Now we have our comments table! Let me explain each table columns' role :
 - `payload`: Actual content of the comment.
 - `reply_of`: I will save the comment's id that we are replying to.
 
-# Summary
+## Summary
 
 In this post we've set the development environment,
 

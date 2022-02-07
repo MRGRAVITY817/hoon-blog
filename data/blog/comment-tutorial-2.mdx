@@ -7,7 +7,7 @@ tags: 'Web,NextJS,Supabase'
 postId: 2
 ---
 
-# Recap
+## Recap
 
 _This is a 2nd part of the `Build comments section with Next.js and Supabase` series.
 If you hadn't read the Part 1, checkout [here](https://hoonwee.com/blog/comment-tutorial-1)._
@@ -18,9 +18,9 @@ Then we headed to Supabase dashboard to create our own PostgreSQL comments table
 In this chapter we will create and read comments with our comments form.
 The follow-along code can be found [here.](https://github.com/MRGRAVITY817/supabse-comments/tree/part-2)
 
-# Create comment
+## Create comment
 
-## Add input form and Supabase client library
+### Add input form and Supabase client library
 
 Our index page is kinda empty now, so we should make it look better. Replace the code in `pages/index.tsx` to the code down below.
 
@@ -65,7 +65,7 @@ To perform the 2nd step, we need a Supabase node client library. Run the command
 $ yarn add @supabase/supabase-js
 ```
 
-## Make our messenger for Supabase
+### Make our messenger for Supabase
 
 Now we need to create a supabase client object, which is a messenger that will help us interact with Supabase.
 Add these 2 lines in `pages/index.tsx`.
@@ -92,7 +92,7 @@ These can be found in `Settings > Project settings > API` section in our Supabas
   height={500}
 />
 
-## Understanding environment variables
+### Understanding environment variables
 
 These keys should be stored somewhere secure and separate.
 Many of the developers save secured data as _'environment variables'_, commonly shorten as 'env vars'.
@@ -139,7 +139,7 @@ const Home: NextPage = () => {
 
 The extra `?? ""` after each env var initalization is to prevent them to be `undefined` type, which then `createClient` won't accept it.
 
-## Send an `insert` request
+### Send an `insert` request
 
 Before we use our `supabase` messenger, we will first get user's comment payload from our input form.
 To do that,
@@ -231,9 +231,9 @@ Head to `comments` table in Supabase dashboard, and you'll see a new data row in
   height={300}
 />
 
-# Read comments
+## Read comments
 
-## Create a comment list
+### Create a comment list
 
 Okay great, now we can create comments but we also want to display them in our web page.
 To do that we'll do following steps:
@@ -282,7 +282,7 @@ Let's disect this part real quick:
 2. The `commentList` state has a array-type of `CommentParams` interface, which contains all the column names for each object key.
 3. The question mark `?` at `reply_of` field indicates that this field is optional.
 
-## Send a `select` request
+### Send a `select` request
 
 Before moving to next step, I want you to add more comments using our form
 
@@ -323,7 +323,7 @@ Now check our web page. It will look much like other comment sections!
   height={1000}
 />
 
-## Sort comments by created order
+### Sort comments by created order
 
 Now our Supabase client takes the comment list in `created` order,
 but soon after when we edit and reply to some of the comments it would bring them by `updated` order.
@@ -357,7 +357,7 @@ Breaking this down:
 
 With correct logic, sorting in Typescript is just a piece of cake.
 
-# Summary
+## Summary
 
 Now to summarize what we've done so far:
 

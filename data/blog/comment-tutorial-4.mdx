@@ -7,7 +7,7 @@ tags: 'Web,NextJS,Supabase,SWR'
 postId: 4
 ---
 
-# Our final goal
+## Our final goal
 
 This is the 4th and final part of the `Build comments section with Next.js and Supabase` series.
 Make sure you've finished,
@@ -23,9 +23,9 @@ By using amazing library called [`SWR`](https://swr.vercel.app/), we will gonna 
 
 The follow-along code can be found [here.](https://github.com/MRGRAVITY817/supabse-comments/tree/part-4)
 
-# Implementing SWR
+## Implementing SWR
 
-## A brief overview of SWR
+### A brief overview of SWR
 
 There are numerous data-fetching libraries for Next.js, but one of the most popular and easiest to use is SWR.
 Here's a simple example from their official document page(modified a little bit for better understanding).
@@ -65,7 +65,7 @@ Explaining the details about it is beyond our article, so better check out
   height={480}
 />
 
-## Setting SWR, and refactor APIs
+### Setting SWR, and refactor APIs
 
 Now let's install SWR with the command below.
 
@@ -157,7 +157,7 @@ It uses `await supabase.from("comments").something(...)` for every case.
 
 Now we've made our decent looking API code, how do we access to it? It's super-easy - Just fetch "/api/comments".
 
-## Replacing 'get comments'
+### Replacing 'get comments'
 
 Now we are going to use our well organized `comments.ts` API with `useSWR` hook.
 First let's replace the old implementation of getting all the comments.
@@ -235,7 +235,7 @@ Here's what happened:
 
 We changed our code a lot, in a good way! Our comment section should work just the same.
 
-## Replacing "add comments"
+### Replacing "add comments"
 
 Next we'll replace 'add comment' feature. To do that we have to add another fetching function which will send a post request to our `comments.ts`.
 
@@ -322,7 +322,7 @@ Now with our powerful cache-modifying code, we can see updated comment list **wi
   height={1000}
 />
 
-## Replacing "edit, delete comments"
+### Replacing "edit, delete comments"
 
 Let's practice using `mutate` one more time, replacing old code for editing comment.
 Add & Replace code like down below.
@@ -418,7 +418,7 @@ Try editing & deleting comment, and check if the comment list changes properly w
   height={480}
 />
 
-# And we are done!
+## And we are done!
 
 Congratulations! We successfully built a comments section with feature of:
 

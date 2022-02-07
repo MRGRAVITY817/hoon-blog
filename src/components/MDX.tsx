@@ -47,13 +47,6 @@ const RoundedImage: React.FC<ImageProps & { comment?: string }> = ({
 };
 
 // headings
-const H1: React.FC = ({ children }) => {
-  return (
-    <h1 className="scroll-mt-12 tablet:text-4xl mt-8 mb-4 text-2xl font-semibold">
-      {children}
-    </h1>
-  );
-};
 
 const H2: React.FC = ({ children }) => {
   return (
@@ -78,7 +71,6 @@ const P: React.FC = ({ children }) => {
 const MDXComponents = {
   a: CustomLink,
   Image: RoundedImage,
-  h1: H1,
   h2: H2,
   h3: H3,
   p: P

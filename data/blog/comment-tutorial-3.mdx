@@ -14,7 +14,7 @@ postId: 3
   height={600}
 />
 
-# Recap
+## Recap
 
 _This is a 3rd part of the `Build comments section with Next.js and Supabase` series.
 Make sure you've finished [Part 1](https://hoonwee.com/blog/comment-tutorial-1/) and [Part 2](https://hoonwee.com/blog/comment-tutorial-2/)._
@@ -24,9 +24,9 @@ In the last post we created two features - creating and reading comments.
 In this chapter we will update, delete and reply our comments. It won't be too different from the last time!
 The follow-along code can be found [here.](https://github.com/MRGRAVITY817/supabse-comments/tree/part-3)
 
-# Update and Delete Comments
+## Update and Delete Comments
 
-## Plan a feature
+### Plan a feature
 
 We make mistakes, especially a lot when we write something in the internet.
 That's why there's always a `Edit` and `Delete` section in posts and comment section in Facebook, Medium, Twitter and etc.
@@ -42,7 +42,7 @@ A great deleting feature should:
 - Ask user if they're really gonna delete this to prevent if this was a click mistake.
 - Then delete it.
 
-## Create edit input form
+### Create edit input form
 
 For the best user experience, the input form to edit the comment should not be the same place where you add a comment but the comment list item itself.
 That means we should upgrade our comment list item, so let's add the following code to do it!
@@ -130,7 +130,7 @@ A brief analysis for this one:
   height={350}
 />
 
-## Constructing `update` request
+### Constructing `update` request
 
 Now only thing to do is just replacing the `confirmEdit` function to communicate with Supabase.
 Replace that part with this code. I'm sure you are now getting familiar with `supabase` api.
@@ -188,7 +188,7 @@ Hit `Run` to run the query and adapt the trigger.
 
 Now our edit request will work like a charm. Try editing any comment, and then refresh. If succeeded then you'll see your comment edited.
 
-## Disable `Confirm` button when comment is not edited
+### Disable `Confirm` button when comment is not edited
 
 Currently we just allow user to click `Confirm` button whenever they press `Edit` button, without checking if the payload has changed.
 This can arise two problems:
@@ -232,7 +232,7 @@ Now our `Confirm` button will be disabled unless the content of the comment has 
   height={350}
 />
 
-## Indicate `edited`
+### Indicate `edited`
 
 Comment item should indicate that it has been edited. This can be acheived quite easily - by comparing `created_at` and `updated_at`.
 
@@ -257,7 +257,7 @@ Comment item should indicate that it has been edited. This can be acheived quite
 
 Now if we edit any comment, it will indicate `edited` in extra-light & italic font.
 
-## Delete comment
+### Delete comment
 
 Deleting comment is not so different from updating comment - it uses same `match` function to target which comment should
 be deleted. Let's do this real quick.
@@ -330,9 +330,9 @@ and refresh the page - then the comment is gone!
 
 _You see, making CRUD feature with Supabase is Supa-easy!_
 
-# Replying to Comments
+## Replying to Comments
 
-## How our reply will work
+### How our reply will work
 
 Now guess the only column in our table that we haven't used yet - that's right, the `reply_of` column. We'll use it right away to
 add a feature to reply comments.
@@ -343,7 +343,7 @@ Let's think how our reply feature would work best:
 - Then our input form(for adding comments) will show that this comment will be a replying comment of some other comment.
 - Once added and fetched to the comment list, it should still be distinguishable from normal comments.
 
-## Adding `Reply of: ....`
+### Adding `Reply of: ....`
 
 Alrighty, as always let's work with the UI part first.
 
@@ -448,9 +448,9 @@ Now try adding a replying comment and then refresh. If done correctly, you'll se
   height={400}
 />
 
-# Restyling using Icons
+## Restyling using Icons
 
-## Problems with text-only UI
+### Problems with text-only UI
 
 So now our comment section is already awesome. It can read, create, update, delete and reply to comments.
 While it's fully functional, we have to admit that it looks very boring and visually unapealing - because we only used texts for our UI.
@@ -463,7 +463,7 @@ The problem with using only text for our UI can invoke bad user experiences like
 So to solve this, we need some design element that can pack the meaning of the UI into strong and concise visual format.
 The best one for this, as far as I know, is an **icon**.
 
-## Text &rarr; Icons
+### Text &rarr; Icons
 
 There are tons of icon packs in internet, and in here we will use one called [Hero icons](https://heroicons.dev/).
 Since it's been developed from the people behind TailwindCSS, it works best with our project.
@@ -586,7 +586,7 @@ We didn't change much, but looks way better!
   height={800}
 />
 
-# Summary
+## Summary
 
 Now to summarize what we've done so far:
 
