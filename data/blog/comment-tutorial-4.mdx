@@ -2,12 +2,12 @@
 title: 'Build comments section with Next.js and Supabase - Part 4. Reload-less Data Fetching'
 publishedAt: '2022-02-06'
 summary: "We'll learn how to show modified comments without reloading using SWR library."
-image: '/static/images/blog/comment-tutorial/part-3-intro.gif'
+image: '/static/images/blog/comment-tutorial/improve.gif'
 tags: 'Web,NextJS,Supabase,SWR'
 postId: 4
 ---
 
-# Recap
+# Our final goal
 
 This is the 4th and final part of the `Build comments section with Next.js and Supabase` series.
 Make sure you've finished,
@@ -16,7 +16,432 @@ Make sure you've finished,
 - [Part 2. Create/Read Comments](https://hoonwee.com/blog/comment-tutorial-2/)
 - [Part 3. Update, Delete and Reply](https://hoonwee.com/blog/comment-tutorial-3/)
 
-In the last post we created two features - creating and reading comments.
+Finally we've reached the last part of this series! I am so proud of you guys who have been in this journey all along.
 
-In this chapter we will update, delete and reply our comments. It won't be too different from the last time!
-The follow-along code can be found [here.](https://github.com/MRGRAVITY817/supabse-comments/tree/part-3)
+For our grand finale, we will gonna fix the data fetching part, which right now user needs to reload everytime they modify(create, edit, delete) the comments.
+By using amazing library called [`SWR`](https://swr.vercel.app/), we will gonna fix this problem and it will take our comment section's user experience into whole another level.
+
+The follow-along code can be found [here.](https://github.com/MRGRAVITY817/supabse-comments/tree/part-4)
+
+# Implementing SWR
+
+## A brief overview of SWR
+
+There are numerous data-fetching libraries for Next.js, but one of the most popular and easiest to use is SWR.
+Here's a simple example from their official document page(modified a little bit for better understanding).
+
+```typescript
+import useSWR from 'swr';
+
+const fetcher = (url: string) => fetch(url).then((res) => res.body);
+
+function Profile() {
+  const { data, error } = useSWR('/api/user', fetcher);
+
+  if (error) return <div>failed to load</div>;
+  if (!data) return <div>loading...</div>;
+  return <div>hello {data.name}!</div>;
+}
+```
+
+This simple looking code does something beautiful.
+
+- It uses a hook called `useSWR`, which takes 2 arguments:
+  - An `url` to fetch a data.
+  - An `fetcher` function that'll fetch from the given url.
+- Then you can just use the the `data`, like you use a React state.
+
+See? It's so simple! Say goodbye to the hard days where you had to use several `useState`s and `useEffect`s to manipulate and update the
+remote date - which is complicated easy to make mistakes.
+
+As the name propose, the mechanism for this comes from a HTTP cache invalidation strategy called `stale-while-revalidate`.
+Explaining the details about it is beyond our article, so better check out
+[this link](https://developers.google.com/web/tools/workbox/modules/workbox-strategies#stale-while-revalidate) if you're interested.
+
+<Image
+  alt={`Stale-While-Revalidate`}
+  src={'/static/images/blog/comment-tutorial/swr.png'}
+  comment={`Nice explanation from Google Dev Page. SWR pattern is widely used strategy for data caching in web page.`}
+  height={480}
+/>
+
+## Setting SWR, and refactor APIs
+
+Now let's install SWR with the command below.
+
+```bash:Terminal
+$ yarn add swr
+```
+
+And we will replace our old method of fetching data to new one, using `useSWR`.
+
+But first I am pretty sure our code need some refactoring, since we already have too much API-related code in our client-side file `index.tsx`.
+Thankfully, Next.js provides us a `api` directory inside `pages` directory, which you can put all kinds of API codes.
+
+Let's make new file `pages/api/comments.ts`, with the code down below.
+
+```typescript:pages/api/comments.ts
+import { createClient } from "@supabase/supabase-js";
+import { NextApiRequest, NextApiResponse } from "next";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL + "";
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY + "";
+
+export const supabase = createClient(supabaseUrl, supabaseKey);
+
+const CommentsApi = async (req: NextApiRequest, res: NextApiResponse) => {
+  switch (req.method) {
+    // Get all comments
+    case "GET":
+      const { data: getData, error: getError } = await supabase.from("comments").select("*");
+      if (getError) {
+        return res.status(500).json({ message: getError.message });
+      }
+      return res.status(200).json(getData);
+    // Add comment
+    case "POST":
+      const comment = req.body;
+      const { data: postData, error: postError } = await supabase.from("comments").insert(comment);
+      if (postError) {
+        return res.status(500).json({ message: postError.message });
+      }
+      return res.status(200).json(postData);
+    // Edit comment
+    case "PATCH":
+      const { commentId: editcommentId, payload } = req.body;
+      const { data: patchData, error: patchError } = await supabase
+        .from("comments")
+        .update({ payload })
+        .eq("id", editcommentId);
+      if (patchError) {
+        return res.status(500).json({ message: patchError.message });
+      }
+      return res.status(200).json(patchData);
+    // Delete comment
+    case "DELETE":
+      const { comment_id: deleteCommentId } = req.query;
+      if (typeof deleteCommentId === "string") {
+        const { data: deleteData, error: deleteError } = await supabase
+          .from("comments")
+          .delete()
+          .eq("id", deleteCommentId + "");
+        if (deleteError) {
+          return res.status(500).json({ message: deleteError.message });
+        }
+        return res.status(200).json(deleteData);
+      }
+    default:
+      return res.status(405).json({
+        message: "Method Not Allowed",
+      });
+  }
+};
+
+export default CommentsApi;
+```
+
+Now that's a lot of code all of a sudden! Don't worry, I'll explain one-by-one.
+
+- `CommentsApi` function takes `req` which is a request from the caller of this API,
+  and `res` which is a response that we'll modify according to the request.
+- Inside the function, we encounter a `switch` condition filter with 5 `case`s:
+  - `case "GET"`: This will be called for getting comments.
+  - `case "POST"`: This will be called for adding a comment.
+  - `case "PATCH"`: This will be called for editing a comment.
+  - `case "DELETE"`: This will be called for deleting a comment.
+  - `default`: This will omit error for unsupported methods.
+
+So what we've done is just moving the API related stuffs to this file.
+Each implementation inside the `case` block is identical to ones we've written in `index.tsx`.
+It uses `await supabase.from("comments").something(...)` for every case.
+
+Now we've made our decent looking API code, how do we access to it? It's super-easy - Just fetch "/api/comments".
+
+## Replacing 'get comments'
+
+Now we are going to use our well organized `comments.ts` API with `useSWR` hook.
+First let's replace the old implementation of getting all the comments.
+
+Edit & Delete codes in `index.tsx` with the code below.
+
+```typescript:pages/index.tsx {4, 7, 35, 41, 50}
+
+...
+
+const fetcher = (url: string) => fetch(url, { method: "GET" }).then((res) => res.json());
+
+const Home: NextPage = () => {
+  const { data: commentList, error: commentListError } = useSWR<CommentParams[]>("/api/comments", fetcher);
+  /* Deleted
+	const [commentList, setCommentList] = useState<CommentParams[]>([]);
+	*/
+  const [comment, setComment] = useState<string>("");
+
+...
+
+	/* Deleted
+	const getCommentList = async () => {
+		const { data, error } = await supabase.from("comments").select("*");
+		if (!error && data) {
+			setCommentList(data);
+		} else {
+			setCommentList([]);
+		}
+	};
+
+	useEffect(() => {
+		getCommentList();
+	}, []);
+	*/
+
+...
+
+<div className="flex items-center justify-start gap-2">
+	<ReplyIcon className="w-4 text-gray-600 rotate-180" />
+	<p className="font-extralight italic text-gray-600 text-sm">
+		{commentList?.find((comment) => comment.id === replyOf)?.payload ?? ""}
+	</p>
+</div>
+
+...
+
+	{(commentList ?? [])
+		.sort((a, b) => {
+			const aDate = new Date(a.created_at);
+
+...
+
+<div className="flex items-center justify-start gap-2">
+	<ReplyIcon className="w-3 text-gray-600 rotate-180" />
+	<p className="font-extralight italic text-gray-600 text-xs">
+		{commentList?.find((c) => c.id === comment.reply_of)?.payload ?? ""}
+	</p>
+</div>
+
+...
+
+```
+
+Here's what happened:
+
+- Removed `commentList` React State, `getCommentList` function and `useEffect` which was used to update comments when data is refetched.
+- Replaced that part with a single line of code(or maybe 2 or 3 lines of code depending on your formatter), using `useSWR` hook.
+  - Same as an example from above, it contains `url("/api/comments")` and `fetcher`.
+  - Since we are using `GET` method with `fetch`, our `GET` case in `comments.ts` is executed, which fetches the full comment list.
+- Added little `?` and ` ?? []` to `commentList` when it's used for `find`ing or `sort`ing something.
+  - A reason for this is because our data fetched from `useSWR` is fallible, so it counts for the chance to being a `undefined` for fetch failure.
+  - So we should inform the `find` function with `?` typing that it might contain the `undefined` data.
+  - For `sort` function, which doesn't tolerate `undefined`, we have to hand over at least the empty array.
+
+We changed our code a lot, in a good way! Our comment section should work just the same.
+
+## Replacing "add comments"
+
+Next we'll replace 'add comment' feature. To do that we have to add another fetching function which will send a post request to our `comments.ts`.
+
+Add `addCommentRequest` function right after `fetcher`.
+
+```typescript:pages/index.tsx {6-11}
+
+...
+
+const fetcher = (url: string) => fetch(url, { method: "GET" }).then((res) => res.json());
+
+const addCommentRequest = (url: string, data: any) =>
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  }).then((res) => res.json());
+
+const Home: NextPage = () => {
+
+...
+
+```
+
+We stringify the comment data and post it. No difficult things to be explained.
+
+Now we'll use an interesting feature of SWR, called `mutate`.
+Using `mutate` we can modify the local cache of comment list before we even refetch the updated list from Supabase server.
+
+Let's discover the behaviour by just implementing it. Update the `onSubmit` function, and edit our add comment form.
+
+```typescript:pages/index.tsx {4-20, 26}
+
+...
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const newComment = {
+      username: "hoonwee@email.com",
+      payload: comment,
+      reply_of: replyOf,
+    };
+    if (typeof commentList !== "undefined") {
+      mutate("api/comments", [...commentList, newComment], false);
+      const response = await addCommentRequest("api/comments", newComment);
+      if (response[0].created_at) {
+        mutate("api/comments");
+        window.alert("Hooray!");
+        setComment("")
+      }
+    }
+  };
+
+...
+
+	<input
+		onChange={onChange}
+		value={comment}
+		type="text"
+		placeholder="Add a comment"
+		className="p-2 border-b focus:border-b-gray-700 w-full outline-none"
+	/>
+
+```
+
+We removed our old `await supabase...` and replaced it with someting else:
+
+- We added two `mutate` functions, which will refetch comment list that has added a new comment. But why two?
+  - The first one won't actually refetch the data.
+    Instead it will **assume** that adding a comment has succeeded, and **pretend** that it refetched it by modifying the local cache of comment list.
+  - Now the second one will actually refetch the data, and compare between data modified and data refetched.
+    When it's equal, it does nothing. While there's any difference, it will rerender for the correct comment list.
+- There's a `await addCommentRequest` function call in between two `mutate` functions. This will send a POST request to `comments.ts` API, and return the response for the request.
+  - Once succeeded adding a comment, it will return an array with single comment item.
+  - So if the response is an array, and the first element has `created_at` field, the request is confirmed to be successful
+    so we'll use second `mutate` function to compare with modified cache, and initalize the comment form with `setComment` by setting an empty string.
+
+Now with our powerful cache-modifying code, we can see updated comment list **without reloading** the page!
+
+<Image
+  alt={`Add comment without reloading`}
+  src={'/static/images/blog/comment-tutorial/swr_add_comment.gif'}
+  comment={`This gives us much better user experience.`}
+  height={1000}
+/>
+
+## Replacing "edit, delete comments"
+
+Let's practice using `mutate` one more time, replacing old code for editing comment.
+Add & Replace code like down below.
+
+```typescript:pages/index.tsx {4-9, 13-36}
+
+...
+
+const editCommentRequest = (url: string, data: any) =>
+  fetch(url, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  }).then((res) => res.json());
+
+...
+
+  const confirmEdit = async () => {
+    const editData = {
+      payload: editComment.payload,
+      commentId: editComment.id,
+    };
+    if (typeof commentList !== "undefined") {
+      mutate(
+        "api/comments",
+        commentList.map((comment) => {
+          if (comment.id === editData.commentId) {
+            return { ...comment, payload: editData.payload };
+          }
+        }),
+        false
+      );
+      const response = await editCommentRequest("api/comments", editData);
+      console.log(response);
+      if (response[0].created_at) {
+        mutate("api/comments");
+        window.alert("Hooray!");
+        setEditComment({ id: "", payload: "" });
+      }
+    }
+  };
+
+...
+
+```
+
+The flow is the same as we've done for `onSubmit` function.
+
+- We first added a `editCommentRequest` fetcher function.
+- We added two `mutate`, the _pretending_ one, and the _real one_ in `confirmEdit`.
+- Before executing 2nd `mutate`, we check if our request has succeeded with `response[0].created_at`.
+- Finally we reset the `editComment` state.
+
+Let's do the same work for deleting comments.
+
+```typescript:pages/index.tsx {4-5, 9-23}
+
+...
+
+const deleteCommentRequest = (url: string, id: string) =>
+  fetch(`${url}?comment_id=${id}`, { method: "DELETE" }).then((res) => res.json());
+
+...
+
+  const confirmDelete = async (id: string) => {
+    const ok = window.confirm("Delete comment?");
+    if (ok && typeof commentList !== "undefined") {
+      mutate(
+        "api/comments",
+        commentList.filter((comment) => comment.id !== id),
+        false
+      );
+      const response = await deleteCommentRequest("api/comments", id);
+      if (response[0].created_at) {
+        mutate("api/comments");
+        window.alert("Deleted Comment :)");
+      }
+    }
+  };
+
+...
+
+```
+
+No explaination needed! It's the same as we did for editing comment.
+
+Try editing & deleting comment, and check if the comment list changes properly without reloading.
+
+<Image
+  alt={`Reloadless editing`}
+  src={'/static/images/blog/comment-tutorial/swr-edit.gif'}
+  comment={`Should work the same for deleting.`}
+  height={480}
+/>
+
+# And we are done!
+
+Congratulations! We successfully built a comments section with feature of:
+
+- CRUD(Create, Read, Update, Delete)ing the comments, with **Supabase** node library.
+- Mutate UI without reloading with **SWR**
+- Clean & understandable design, powered by **TailwindCSS** and **Hero Icons**.
+
+Although our comment section is awesome, there are some improvements to be made (do it by yourself!):
+
+- Replace browser's alert/confirm window to _toast UI_. It will look better.
+- Implement _user login_, to make it usable in community service. You can make it from scratch, or...
+  - Use Supabase's native user table
+  - Use [Magic](https://magic.link/).
+  - Use [NextAuth](https://next-auth.js.org/).
+- Transform the replying system into _threads_.
+
+<Image
+  alt={`Toast UI`}
+  src={'/static/images/blog/comment-tutorial/improve.gif'}
+  comment={`Toast UI is better that browser alert/confirm windows, because it gives a same feel and style with your other UI components.`}
+  height={400}
+/>
+
+And that's all for this series! Thank you so much for following up this far, and I hope to see you on my next blog post/series!
+
+Until then, happy coding!

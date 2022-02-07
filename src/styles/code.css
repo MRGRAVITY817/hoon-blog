@@ -76,3 +76,11 @@ code[class*='language-'],
 pre[class*='language-'] {
   @apply dark:text-gray-50 text-gray-800;
 }
+
+code:after {
+  display: none;
+}
+
+code:before {
+  display: none;
+}

@@ -130,7 +130,7 @@ A brief analysis for this one:
   height={350}
 />
 
-## Send an `update` request
+## Constructing `update` request
 
 Now only thing to do is just replacing the `confirmEdit` function to communicate with Supabase.
 Replace that part with this code. I'm sure you are now getting familiar with `supabase` api.
@@ -144,7 +144,6 @@ Replace that part with this code. I'm sure you are now getting familiar with `su
       .from("comments")
       .update({
         payload: editComment.payload,
-        updated_at: new Date(),
       })
       .match({ id: editComment.id });
     if (!error && data) {
@@ -164,14 +163,37 @@ So apparently from this code,
   - We only need to pass the changed part, not the whole other parts.
 - Then used `match` function to target which comments should be updated.
 
-Try editing any comment, and then refresh. If succeeded then you'll see your comment edited.
+But wait, shouldn't we update the `updated_at`?
+
+That is correct! We will do it in Supabase Dashboard, not in our Next.js code.
+We will use an actual SQL query to accomplish this, and to do that head to **SQL Editor** through navigation bar.
+Then you'll see an input box to write down the SQL query. Insert the SQL query down below.
+
+```sql
+create extension if not exists moddatetime schema extensions;
+
+create trigger handle_updated_at before update on comments
+  for each row execute procedure moddatetime (updated_at);
+```
+
+So much to explain about this query, but basically it will set the `updated_at` column to the current timestamp for every update.
+Hit `Run` to run the query and adapt the trigger.
+
+<Image
+  alt={`Update Trigger`}
+  src={'/static/images/blog/comment-tutorial/supabase_sql.png'}
+  comment={`Using SQL editor, we can take maximum power out of Supabase!`}
+  height={500}
+/>
+
+Now our edit request will work like a charm. Try editing any comment, and then refresh. If succeeded then you'll see your comment edited.
 
 ## Disable `Confirm` button when comment is not edited
 
 Currently we just allow user to click `Confirm` button whenever they press `Edit` button, without checking if the payload has changed.
 This can arise two problems:
 
-- Our `confirmEdit` function always passes `updated_at: new Date()` so even though we've mistakenly confirm the edit without changing,
+- Our `confirmEdit` function always changes `updated_at` data, so even though we've mistakenly confirm the edit without changing,
   the comment will always be marked as `edited` since there's no going back in time.
 - Now this is not that critical matter, but if we were to use this in much bigger project,
   then there will be unnecessary transaction between user browser and Supabase.
