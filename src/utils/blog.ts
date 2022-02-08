@@ -1,4 +1,5 @@
 import { Blog } from '.contentlayer/types';
+import _ from 'lodash';
 
 export const getBlogTags = (posts: Blog[]) => {
   const tags = posts.map((post) => post.tags.split(',')).flat(1);
@@ -6,20 +7,12 @@ export const getBlogTags = (posts: Blog[]) => {
   return Array.from(tagSet);
 };
 
-// type CommentArray = { replies: number[]; id: number }[];
-
-// const tree = (high: CommentArray, low: CommentArray) => {
-//   high.map(comment => comment.)
-// }
-
-// export const traverseCommentTree = (
-//   comments: { replies: number[]; id: number }[]
-// ) => {
-//   const highest = comments.filter((comment) => comment.replies.includes(-1));
-//   const lower = comments.filter((comment) => !highest.includes(comment));
-
-//   const threads = highest.map((high) => {
-//     const
-//     return [high, high.replies.filter(h => h)]
-//   });
-// };
+export const getSeries = (posts: Blog[]) =>
+  _.uniqBy(
+    posts
+      .filter((post) => typeof post.series !== 'undefined')
+      .map((post) => {
+        return { title: post.series, id: post.seriesId };
+      }),
+    'id'
+  );

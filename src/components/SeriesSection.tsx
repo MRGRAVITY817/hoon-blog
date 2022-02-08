@@ -3,25 +3,27 @@ import { getBlogTags } from '@utils/blog';
 import { PostTag } from './PostTag';
 import Image from 'next/image';
 import Link from 'next/link';
+import _ from 'lodash';
 
 export const SeriesSection: React.FC<{ posts: Blog[] }> = ({ posts }) => {
-  const series = Array.from(
-    new Set(
-      posts
-        .filter((post) => typeof post.series !== 'undefined')
-        .map((post) => post.series)
-    )
+  const series = _.uniqBy(
+    posts
+      .filter((post) => typeof post.series !== 'undefined')
+      .map((post) => {
+        return { title: post.series, id: post.seriesId };
+      }),
+    'id'
   );
   return (
     <div className="tablet:grid-cols-3 grid grid-cols-1 gap-4">
-      {series.map((title) => {
+      {series.map(({ title, id }) => {
         const tags = getBlogTags(posts.filter((post) => post.series === title));
         return (
-          <Link key={title ?? ''} href="#">
-            <a className="flex flex-col gap-4 rounded-lg cursor-pointer">
+          <Link key={title} href={`/blog/series/${id}`}>
+            <a className="flex flex-col gap-4 rounded-lg cursor-pointer hover:scale-[97%] transition-transform">
               <div className="relative h-48">
                 <Image
-                  src={posts.find((post) => post.series === title)?.image ?? ''}
+                  src={posts.find((post) => post.seriesId === id)?.image ?? ''}
                   alt="Fill"
                   layout="fill"
                   objectFit="cover"
