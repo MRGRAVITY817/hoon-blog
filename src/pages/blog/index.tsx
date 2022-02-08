@@ -4,8 +4,8 @@ import { GetStaticProps, NextPage } from 'next';
 import { PostPreview } from 'src/components/PostPreview';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-import { getNumericDate } from '@utils/time';
 import { getBlogTags } from '@utils/blog';
+import { SeriesSection } from '@components/SeriesSection';
 
 interface BlogIndexProps {
   posts: Blog[];
@@ -15,7 +15,8 @@ const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
   const tags = getBlogTags(posts);
   const [searching, setSearching] = useState(false);
   const [tagList, setTagList] = useState<string[]>([]);
-  const [filteredPosts, setFilteredPosts] = useState<Blog[]>();
+  const [filteredPosts, setFilteredPosts] = useState<Blog[]>([]);
+  const [showMoreRecent, setShowMoreRecent] = useState<boolean>(false);
 
   useEffect(() => {
     tagList.length === 0 ? setSearching(false) : setSearching(true);
@@ -64,32 +65,42 @@ const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
       </div>
       {searching ? (
         <article className="grid grid-flow-row gap-4">
+          <h2 className="mb-4">Filtered Posts</h2>
           {typeof filteredPosts !== 'undefined' &&
             filteredPosts.map((post) => (
               <PostPreview key={post.slug} post={post} />
             ))}
         </article>
       ) : (
-        <article className="grid grid-flow-row gap-12">
-          <section className="grid">
+        <article className="grid grid-flow-row">
+          <section id="pinned" className="mb-4">
             <h2 className="mb-4">Pinned</h2>
             <PostPreview
               post={posts.find((post) => post.tags.includes('Pinned'))!}
             />
           </section>
-          <section>
+          <section id="recent" className="mb-20">
             <h2 className="mb-4">Recent</h2>
-            <div className="grid grid-flow-row gap-4">
+            <div className="grid grid-flow-row gap-6">
               {posts
                 .sort((a, b) => {
                   const aDate = new Date(a.publishedAt);
                   const bDate = new Date(b.publishedAt);
                   return +bDate - +aDate;
                 })
-                .map((post) => (
-                  <PostPreview key={post.slug} post={post} />
-                ))}
+                .map((post) => <PostPreview key={post.slug} post={post} />)
+                .slice(0, showMoreRecent ? 1000 : 2)}
             </div>
+            <button
+              onClick={() => setShowMoreRecent(!showMoreRecent)}
+              className="hover:text-orange-500 mt-4 text-2xl underline transition-colors"
+            >
+              {showMoreRecent ? 'Hide' : 'Show more ...'}
+            </button>
+          </section>
+          <section id="series">
+            <h2 className="mb-4">Series</h2>
+            <SeriesSection posts={posts} />
           </section>
         </article>
       )}
