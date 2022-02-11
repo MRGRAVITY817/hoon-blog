@@ -73,6 +73,9 @@ export const MobileNav = () => {
               <MyLink href="/blog">Blog</MyLink>
             </Menu.Item>
             <Menu.Item>
+              <MyLink href="/bits">Bits & Pieces</MyLink>
+            </Menu.Item>
+            <Menu.Item>
               <MyLink href="/projects">Projects</MyLink>
             </Menu.Item>
             {status === 'authenticated' && (

@@ -42,6 +42,7 @@ export const Header: React.FC = () => {
             <div className="grid grid-flow-col gap-8">
               <HeaderMenu title="Home" href="/" />
               <HeaderMenu title="Blog" href="/blog" />
+              <HeaderMenu title="Bits & Pieces" href="/bits" />
               <HeaderMenu title="Projects" href="/projects" />
             </div>
           </div>
