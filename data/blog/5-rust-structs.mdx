@@ -1,0 +1,400 @@
+---
+title: 'Rust structs - How well are you using it?'
+publishedAt: '2022-02-12'
+summary: 'We will learn several ways to build a struct instance and use them in Rust'
+image: '/static/images/blog/rust-structs/intro.png'
+tags: 'Rust,Design Pattern,OOP'
+postId: 5
+---
+
+<Image
+  alt={`Ferris investigating struct`}
+  src={'/static/images/blog/rust-oop/intro.png'}
+  comment={``}
+  height={480}
+/>
+
+## How well are you using `struct`s?
+
+There are several ways to use structs, and we will see some of them and analyze the pros and cons.
+
+## Method 1: Public `struct` with public fields
+
+For public struct with public fields, the easiest way to create struct instance is to do like `StructName { field1: .., field2: .. }`.
+
+```rust:main.rs
+struct Student<'a> {
+		name: String,
+		age: i32,
+		friends: Vec<&'a str>
+}
+
+fn main() {
+		let harry = Student {
+				name: "Harry Potter".to_string(),
+				age: 12,
+				name: vec!["Ron Wealsey"],
+		};
+
+		/* using '.' operator */
+		let _harry_name = harry.name;
+		let _harry_age = harry.age;
+		let _harry_friends = harry.friends;
+
+		/* struct destructuring */
+		let Student {
+				_harry_name,
+				_harry_age,
+				_harry_friends
+		} = harry;
+}
+```
+
+### Pros: Super Simple
+
+- Super simple to define struct.
+  - You don't need to create any other methods to get and set the field data.
+- Getting the field value out of the struct is very easy.
+  - You can use `.` operator to take the field value out. (ex) `harry.name`
+  - You can also use **struct destructuring** by `StructName { field1, field2, .. }`.
+
+### Cons: Too easy to access
+
+- There's no private data for this struct.
+  - If you need any encapsulation for these data fields, this method is not for you.
+- Getting a field like this will give a `owned value`, which is normally unwanted for most of the case.
+
+  - Rust has a special rule called 'ownership', which means that if the value doesn't implement `Copy` trait,
+    the value moves to new variable.
+
+  ```rust
+  let harry = Student {
+  		name: "Harry Potter".to_string(), // This field is `String` type, which doesn't implement a `Copy` trait.
+  		age: 12,
+  		name: vec!["Ron Wealsey"],
+  }
+
+  let harry_name = harry.name; // `harry.name` is moved into a variable `harry_name`
+  let another_name = harry.name; // COMPILE ERROR, since now `harry` doesn't have a value of `name` field.
+  ```
+
+  - You can fix this with using `&` operator by _borrowing_ the value, yet the better way is make a _getter_ method.
+
+  ```rust
+  let harry_name = &harry.name;
+  let another_name = &harry.name;
+  ```
+
+- It can be dangerous to allow both reading and writing by just getting field value with `.` operator.
+
+  ```rust
+  /* Reading the value */
+  let harry_name = harry.name;
+
+  /* By adding a `mut` keyword, you can write the value of the field */
+  let mut write_harry_name = harry.name;
+  write_harry_name = "James Potter".to_string();
+  ```
+
+  The only difference that separates from reading to writing the field value is whether there's a `mut` keyword or not.
+  For simple programs this would be no problem, but still it's important not to make situations that accidentally writes a value in context where we shouldn't.
+
+## Method 2: Using Getter and Setter
+
+The method above is the simplest, yet it's maybe too publicly accessible. You may want to encapsulate the struct by customizing
+which field can be read or written from public context. The most common way to accomplish this is to make a **getter and setter** methods.
+
+You can implement the methods for `struct`s using `impl`.
+
+```rust:main.rs
+/* This struct is public, yet it's fields are private */
+struct Student<'a> {
+		name: String,
+		age: i32,
+		friends: Vec<&'a str>,
+}
+
+impl<'a> Student<'a> {
+		pub fn name(&self) -> &str {
+			&self.name
+		}
+		pub fn age(&self) -> i32 {
+			self.age
+		}
+		pub fn friends(&self) -> &[&str] {
+			self.friends.as_slice()
+		}
+}
+
+fn main() {
+		let harry = Student {
+			name: "Harry Potter".to_string(),
+			age: 12,
+			friends: vec!["Ron Weasley", "Hermione Granger"],
+		};
+
+		let harry_name = harry.name();
+		let harry_age = harry.age();
+		let harry_friends = harry.friends();
+
+		println!("{harry_name}, {harry_age}, {:?}", harry_friends);
+}
+```
+
+### Pros: Nicely encapsulated
+
+- No we have some level of encapsulation.
+  - With the code like above, we provide only two functionalities - building a struct instance, and reading each fields.
+    Our code won't let others to set different value in the field.
+- Segregating the role for read/writing delivers better understanding while reading the code.
+
+  - By getting the value with method, it will give a better understanding whether this is reading or writing it.
+    While in the _public struct and public fields_ method, it was hard to know whether the code is reading or writing the value.
+
+  ```rust
+  let harry_name = harry.name;
+
+  // This is easier to understand the intention of the code.
+  let harry_name = harry.name();
+  let harry_name = harry.set_name("Harry".to_string());
+  ```
+
+- You can choose a custom type for getting a field value.
+
+  - Defining the method gives you whole another power of control.
+    You can choose whether to return the borrowed value or owned value.
+
+  ```rust:main.rs
+  impl Student {
+  		// Returning the borrowed value - this will live until the struct instance is alive
+  		fn borrowed_name(&self) -> &str {
+  				&self.name
+  		}
+  		// Returning the owned and cloned value - this will live as long as it's now moved.
+  		fn owned_name(&self) -> String {
+  				self.name.clone()
+  		}
+  }
+
+  fn main() {
+  		let harry = Student {
+  				name: "Harry potter".to_string(),
+  		};
+  		let borrowed_name = harry.borrowed_name();
+  		let owned_name = harry.owned_name();
+
+  		println!("{borrowed_name}, {owned_name}");
+
+  		drop(harry); // now you can't access to borrowed value
+
+  		println!("{owned_name}");
+  }
+  ```
+
+### Cons: Verbose
+
+- Bunch of codes to write!
+  - If you have 3 fields in your struct, then you will have to write
+    3 getter methods and 3 setter methods if you want to make a full Read/Write API. And that can be a burden for the developer.
+
+### For the lazy developers - use `getset`
+
+If you are too lazy for writing all those methods, try using [getset](https://docs.rs/getset/latest/getset/) crate.
+It provides several macros which is really easy and intuitive to use.
+
+Here's a quick example how to use it.
+
+```rust:main.rs
+use getset::{Getters, Setters};
+
+#[derive(Getters, Setters)]
+struct Student {
+		#[getset(get, set)]
+		name: String,
+}
+
+fn main() {
+		let mut harry = Student {
+			name: "Harry Potter".to_string(),
+		};
+
+		let _get_name = harry.name(); // returns &String type
+		let _set_name = harry.set_name("Harry".to_string()); // returns &mut Student type
+}
+```
+
+## Method 3: Builder Pattern
+
+For those who have studied enough about object-oriented programming, you might have heard of _Design Patterns_.
+Simply put, it's a collections of idiomatic solution for solving problems in OOP project.
+From one of the design patterns, there's a **builder pattern**, which you build a struct instance by setting the field values step-by-step.
+
+Ok...talk is cheap, I'll show you the code. Here's how you implement builder pattern in Rust.
+
+```rust:main.rs
+struct Student<'a> {
+    name: String,
+    age: i32,
+    friends: Vec<&'a str>,
+}
+
+impl<'a> Student<'a> {
+    pub fn builder() -> StudentBuilder<'a> {
+        StudentBuilder::new()
+    }
+		// This can be used after the building process is complete
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+}
+
+struct StudentBuilder<'a> {
+    name: String,
+    age: i32,
+    friends: Vec<&'a str>,
+}
+
+impl<'a> StudentBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            name: "".to_string(),
+            age: 0,
+            friends: vec![],
+        }
+    }
+    pub fn name(self, name: String) -> Self {
+        // `..self` is a syntax sugar for `age: self.age, friends: self.friends`
+        Self { name, ..self }
+    }
+    pub fn age(self, age: i32) -> Self {
+        Self { age, ..self }
+    }
+    pub fn friends(self, friends: Vec<&'a str>) -> Self {
+        Self { friends, ..self }
+    }
+    pub fn build(self) -> Student<'a> {
+        let StudentBuilder { name, age, friends } = self;
+        Student { name, age, friends }
+    }
+}
+
+fn main() {
+    let harry = Student::builder()
+        .name("Harry Potter".to_string())
+        .age(12)
+        .friends(vec!["Ron Weasley", "Hermione Granger"])
+        .build();
+}
+```
+
+With builder pattern, we use intermediary type called `StudentBuilder`(or it should be any `[StructName]Builder`) to assign field types step-by-step.
+
+### Pros: Complete Segregation
+
+- It provides a segragation between intializer and getter/setter.
+  - Initializer is a special kind of method - it doesn't use any self data, yet it creates them.
+    The role of the initializer and the setter methods should not be confused, while the latter is just a mutator for the previously initialized value.
+- By using intermediary `Builder` struct, we restrict the access of struct fields until it's intialized.
+  - Before finalizing the construct of `Student` struct with `build()` method, it doesn't give you an exact `Student` struct,
+    so we cannot use any getters and setters. This will prevent our code from making errors of using unset values.
+
+### Cons: Even longer code
+
+- Implementing a builder pattern gives a better encapsulation than **Method 2**, which results in creating more code as a trade-off.
+- We have to set all the field values in single chain like `builder().field_one(val).field_two(val).field_three(val).build()`,
+  which can be restrictive because there might be some situations that we cannot afford all the field values beforehand.
+  - This can be solved with implementing _ergonomic version_.
+
+### Ergonomic Builder Pattern
+
+The restrictiveness of 2nd problem we had in builder pattern can be solved by providing **mutability** in builder methods.
+The implementation code should be changed like this.
+
+```rust:main.rs
+struct Student<'a> {
+    name: String,
+    age: i32,
+    friends: Vec<&'a str>,
+}
+
+impl<'a> Student<'a> {
+    pub fn builder() -> StudentBuilder<'a> {
+        StudentBuilder::new()
+    }
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+}
+
+struct StudentBuilder<'a> {
+    name: String,
+    age: i32,
+    friends: Vec<&'a str>,
+}
+
+impl<'a> StudentBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            name: "".to_string(),
+            age: 0,
+            friends: vec![],
+        }
+    }
+    pub fn name(&mut self, name: String) {
+        self.name = name;
+    }
+    pub fn age(&mut self, age: i32) {
+        self.age = age;
+    }
+    pub fn friends(&mut self, friends: Vec<&'a str>) {
+        self.friends = friends;
+    }
+    pub fn build(self) -> Student<'a> {
+        let StudentBuilder { name, age, friends } = self;
+        Student { name, age, friends }
+    }
+}
+
+fn main() {
+    let mut harry_builder = Student::builder();
+
+    let name = "Harry Potter".to_string();
+    harry_builder.name(name);
+
+    let age = 12;
+    harry_builder.age(age);
+
+    let friends = vec!["Ron Weasley", "Hermione Granger"];
+    harry_builder.friends(friends);
+
+    let harry = harry_builder.build();
+}
+```
+
+This way, we can place the code for setting the field values in place where they are affordable.
+This small fix hasn't even increased any code lengths, so that's super-awesome!
+
+For the detailed explanation for builder patterns in Rust, find it [here](https://rust-unofficial.github.io/patterns/patterns/creational/builder.html).
+
+## Conclusions
+
+So, what method should we choose for our project? It's hard to answer, but there's an old wisdom for any kind of craftsmanship.
+
+**_" The more difficult for the maker, the better for the user. "_**
+
+Three methods that we've seen in this article shows the best example for the
+quote above. More you write your code, you provide better developer experience for
+you and others who use your crate. It's completely up to you, but here I give you
+some obvious recommendations.{' '}
+
+- For projects which needs rapid development, go for
+  the easiest first, and then the more difficult one when refactoring.{' '}
+- For projects that should have solid foundations from the beginning,
+  - Implement getter/setter or builder pattern by your own, if you have a lot of time.
+  - Or use helper crates like `getset` to quickly implement getter/setter, if you have less time to finish.
+
+One thing you should remember is that using `getset` is great, but for better customization _(like configuring the return types of methods)_ , you should implement it by yourself.
+
+I hope this article will guide you feel lost when using `struct` in Rust. I'll come back with more Rust-related posts!
+
+**Until then, happy coding :)**
