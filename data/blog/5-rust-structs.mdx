@@ -24,29 +24,29 @@ For public struct with public fields, the easiest way to create struct instance 
 
 ```rust:main.rs
 struct Student<'a> {
-		name: String,
-		age: i32,
-		friends: Vec<&'a str>
+    name: String,
+    age: i32,
+    friends: Vec<&'a str>
 }
 
 fn main() {
-		let harry = Student {
-				name: "Harry Potter".to_string(),
-				age: 12,
-				name: vec!["Ron Wealsey"],
-		};
+    let harry = Student {
+        name: "Harry Potter".to_string(),
+        age: 12,
+        name: vec!["Ron Wealsey"],
+    };
 
-		/* using '.' operator */
-		let _harry_name = harry.name;
-		let _harry_age = harry.age;
-		let _harry_friends = harry.friends;
+    /* using '.' operator */
+    let _harry_name = harry.name;
+    let _harry_age = harry.age;
+    let _harry_friends = harry.friends;
 
-		/* struct destructuring */
-		let Student {
-				_harry_name,
-				_harry_age,
-				_harry_friends
-		} = harry;
+    /* struct destructuring */
+    let Student {
+        _harry_name,
+        _harry_age,
+        _harry_friends
+    } = harry;
 }
 ```
 
@@ -69,9 +69,9 @@ fn main() {
 
   ```rust
   let harry = Student {
-  		name: "Harry Potter".to_string(), // This field is `String` type, which doesn't implement a `Copy` trait.
-  		age: 12,
-  		name: vec!["Ron Wealsey"],
+      name: "Harry Potter".to_string(), // This field is `String` type, which doesn't implement a `Copy` trait.
+      age: 12,
+      name: vec!["Ron Wealsey"],
   }
 
   let harry_name = harry.name; // `harry.name` is moved into a variable `harry_name`
@@ -109,35 +109,35 @@ You can implement the methods for `struct`s using `impl`.
 ```rust:main.rs
 /* This struct is public, yet it's fields are private */
 struct Student<'a> {
-		name: String,
-		age: i32,
-		friends: Vec<&'a str>,
+    name: String,
+    age: i32,
+    friends: Vec<&'a str>,
 }
 
 impl<'a> Student<'a> {
-		pub fn name(&self) -> &str {
-			&self.name
-		}
-		pub fn age(&self) -> i32 {
-			self.age
-		}
-		pub fn friends(&self) -> &[&str] {
-			self.friends.as_slice()
-		}
+    pub fn name(&self) -> &str {
+    	&self.name
+    }
+    pub fn age(&self) -> i32 {
+    	self.age
+    }
+    pub fn friends(&self) -> &[&str] {
+    	self.friends.as_slice()
+    }
 }
 
 fn main() {
-		let harry = Student {
-			name: "Harry Potter".to_string(),
-			age: 12,
-			friends: vec!["Ron Weasley", "Hermione Granger"],
-		};
+    let harry = Student {
+    	name: "Harry Potter".to_string(),
+    	age: 12,
+    	friends: vec!["Ron Weasley", "Hermione Granger"],
+    };
 
-		let harry_name = harry.name();
-		let harry_age = harry.age();
-		let harry_friends = harry.friends();
+    let harry_name = harry.name();
+    let harry_age = harry.age();
+    let harry_friends = harry.friends();
 
-		println!("{harry_name}, {harry_age}, {:?}", harry_friends);
+    println!("{harry_name}, {harry_age}, {:?}", harry_friends);
 }
 ```
 
@@ -166,28 +166,28 @@ fn main() {
 
   ```rust:main.rs
   impl Student {
-  		// Returning the borrowed value - this will live until the struct instance is alive
-  		fn borrowed_name(&self) -> &str {
-  				&self.name
-  		}
-  		// Returning the owned and cloned value - this will live as long as it's now moved.
-  		fn owned_name(&self) -> String {
-  				self.name.clone()
-  		}
+      // Returning the borrowed value - this will live until the struct instance is alive
+      fn borrowed_name(&self) -> &str {
+          &self.name
+      }
+      // Returning the owned and cloned value - this will live as long as it's now moved.
+      fn owned_name(&self) -> String {
+          self.name.clone()
+      }
   }
 
   fn main() {
-  		let harry = Student {
-  				name: "Harry potter".to_string(),
-  		};
-  		let borrowed_name = harry.borrowed_name();
-  		let owned_name = harry.owned_name();
+      let harry = Student {
+          name: "Harry potter".to_string(),
+      };
+      let borrowed_name = harry.borrowed_name();
+      let owned_name = harry.owned_name();
 
-  		println!("{borrowed_name}, {owned_name}");
+      println!("{borrowed_name}, {owned_name}");
 
-  		drop(harry); // now you can't access to borrowed value
+      drop(harry); // now you can't access to borrowed value
 
-  		println!("{owned_name}");
+      println!("{owned_name}");
   }
   ```
 
@@ -209,17 +209,17 @@ use getset::{Getters, Setters};
 
 #[derive(Getters, Setters)]
 struct Student {
-		#[getset(get, set)]
-		name: String,
+    #[getset(get, set)]
+    name: String,
 }
 
 fn main() {
-		let mut harry = Student {
-			name: "Harry Potter".to_string(),
-		};
+    let mut harry = Student {
+    	name: "Harry Potter".to_string(),
+    };
 
-		let _get_name = harry.name(); // returns &String type
-		let _set_name = harry.set_name("Harry".to_string()); // returns &mut Student type
+    let _get_name = harry.name(); // returns &String type
+    let _set_name = harry.set_name("Harry".to_string()); // returns &mut Student type
 }
 ```
 
@@ -242,7 +242,7 @@ impl<'a> Student<'a> {
     pub fn builder() -> StudentBuilder<'a> {
         StudentBuilder::new()
     }
-		// This can be used after the building process is complete
+    // This can be used after the building process is complete
     pub fn name(&self) -> &str {
         &self.name
     }
