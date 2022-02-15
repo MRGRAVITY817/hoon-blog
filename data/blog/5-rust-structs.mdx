@@ -301,8 +301,7 @@ With builder pattern, we use intermediary type called `StudentBuilder`(or it sho
 ### Cons: Even longer code
 
 - Implementing a builder pattern gives a better encapsulation than **Method 2**, which results in creating more code as a trade-off.
-- We have to set all the field values in single chain like `builder().field_one(val).field_two(val).field_three(val).build()`,
-  which can be restrictive because there might be some situations that we cannot afford all the field values beforehand.
+- We have to set all the field values in single chain, which can be restrictive because there might be some situations that we cannot afford all the field values beforehand.
   - This can be solved with implementing _ergonomic version_.
 
 ### Ergonomic Builder Pattern
