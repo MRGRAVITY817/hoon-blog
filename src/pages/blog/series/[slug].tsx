@@ -45,7 +45,7 @@ const Series: NextPage<SeriesProps> = ({ series, posts }) => {
         </div>
         <div id="total-info" className="mb-12">
           <h2 className="mb-4">Totals</h2>
-          <div className="justify-left flex items-center gap-2 my-4">
+          <div className="justify-left tablet:grid-flow-col grid items-center grid-flow-row gap-2 my-4">
             <TotalMetricItem label="Posts Uploaded" total={posts.length} />
             <TotalMetricItem
               label="Minutes to Read"
@@ -98,7 +98,7 @@ const TotalMetricItem: React.FC<{ label: string; total: string | number }> = ({
   label,
   total
 }) => (
-  <div className="border-main dark:border-bright p-4 border-2 rounded-lg min-w-[100px]">
+  <div className="border-main dark:border-bright h-full p-4 border-2 rounded-lg">
     <p className="text-xl font-medium text-center">{label}</p>
     <div className="border-main dark:border-bright h-0 my-4 border" />
     <p className="text-xl font-light text-center">{total}</p>
