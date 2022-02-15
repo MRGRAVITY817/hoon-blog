@@ -2,10 +2,10 @@ import { allBlogs } from '.contentlayer/data';
 import { Blog } from '.contentlayer/types';
 import { GetStaticProps, NextPage } from 'next';
 import { PostPreview } from 'src/components/PostPreview';
-import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { getBlogTags } from '@utils/blog';
 import { SeriesSection } from '@components/SeriesSection';
+import { RootLayout } from '@layouts/Root';
 
 interface BlogIndexProps {
   posts: Blog[];
@@ -36,11 +36,20 @@ const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
     );
   }, [tagList, posts]);
 
+  const meta = {
+    title: 'Blog - Hoon Wee',
+    description: 'I write articles about Techs and UX',
+    image: `https://hoonwee.com/static/images/banner/blog.png`,
+    type: 'website'
+  };
+
   return (
-    <div>
-      <Head>
-        <title>Blog - Hoon Wee</title>
-      </Head>
+    <RootLayout
+      title={meta.title}
+      description={meta.description}
+      image={meta.image}
+      type={meta.type}
+    >
       <h1 className="mb-12">Blog posts</h1>
       <div className="flex flex-wrap gap-2 mb-12">
         {tags
@@ -104,7 +113,7 @@ const BlogIndex: NextPage<BlogIndexProps> = ({ posts }) => {
           </section>
         </article>
       )}
-    </div>
+    </RootLayout>
   );
 };
 

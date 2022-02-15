@@ -1,18 +1,20 @@
-import { Toast } from '@components/Toast';
-import { Footer } from '../components/Footer';
-import { Header } from '../components/Header';
+import { RootLayout } from './Root';
 
 export const MainLayout: React.FC = ({ children }) => {
+  const meta = {
+    title: `Hoon Wee - Developer & UX enthusiast`,
+    description: `Freelance Typescript & Rust Developer. I write blog posts every week!`,
+    image: `https://hoonwee.com/static/images/banner/main.png`,
+    type: 'website'
+  };
   return (
-    <div className="laptop:grid-cols-5 tablet:grid-cols-7 tablet:grid">
-      <div />
-      <div className="laptop:col-span-3 tablet:col-span-5 w-full min-h-screen col-span-7 px-4">
-        <Header />
-        <Toast />
-        <main className="tablet:py-12 min-h-screen py-8">{children}</main>
-        <Footer />
-      </div>
-      <div />
-    </div>
+    <RootLayout
+      title={meta.title}
+      description={meta.description}
+      image={meta.image}
+      type={meta.type}
+    >
+      {children}
+    </RootLayout>
   );
 };

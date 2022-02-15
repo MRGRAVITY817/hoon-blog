@@ -1,19 +1,15 @@
 import { IndexBlog, IndexIntro, IndexProjects } from '@components/index';
+import { MainLayout } from '@layouts/Main';
 import type { NextPage } from 'next';
-import Head from 'next/head';
 
 const Home: NextPage = () => {
   return (
-    <div>
-      <Head>
-        <title>{`Home - Hoon Wee`}</title>
-      </Head>
+    <MainLayout>
       <article className="gap-y-20 laptop:mb-20 tablet:mb-12 flex flex-col w-full mb-8">
         <IndexIntro />
         <IndexBlog />
-        {/* <IndexProjects /> */}
       </article>
-    </div>
+    </MainLayout>
   );
 };
 

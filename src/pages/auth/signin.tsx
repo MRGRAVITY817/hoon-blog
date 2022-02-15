@@ -4,17 +4,25 @@ import {
   ShieldCheckIcon,
   ShieldExclamationIcon
 } from '@heroicons/react/outline';
-import Head from 'next/head';
+import { RootLayout } from '@layouts/Root';
 
 const SignIn = ({
   providers
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { data: session, status } = useSession();
+  const meta = {
+    title: 'Login - Hoon Wee',
+    description: 'Login with Google or Github, and leave comments in posts.',
+    image: `https://hoonwee.com/static/images/banner/main.png`,
+    type: 'website'
+  };
   return (
-    <div>
-      <Head>
-        <title>Sign In - Hoon Wee</title>
-      </Head>
+    <RootLayout
+      title={meta.title}
+      description={meta.description}
+      image={meta.image}
+      type={meta.type}
+    >
       <div className="flex flex-col items-center mt-12">
         {status === 'authenticated' ? (
           <>
@@ -38,7 +46,7 @@ const SignIn = ({
           </>
         )}
       </div>
-    </div>
+    </RootLayout>
   );
 };
 

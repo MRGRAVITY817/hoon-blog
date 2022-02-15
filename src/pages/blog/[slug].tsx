@@ -13,21 +13,15 @@ interface PostProps {
 const Post: NextPage<PostProps> = ({ post }) => {
   const Component = useMDXComponent(post?.body.code + '');
   return (
-    <div>
-      <Head>
-        <title>{`${post?.title + ''} - Hoon Wee`}</title>
-      </Head>
-
-      <BlogLayout post={post}>
-        <Component
-          components={
-            {
-              ...components
-            } as any
-          }
-        />
-      </BlogLayout>
-    </div>
+    <BlogLayout post={post}>
+      <Component
+        components={
+          {
+            ...components
+          } as any
+        }
+      />
+    </BlogLayout>
   );
 };
 
