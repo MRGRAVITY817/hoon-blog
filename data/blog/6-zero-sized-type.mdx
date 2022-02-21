@@ -1,0 +1,286 @@
+---
+title: "What's the use of zero-sized types in Rust?"
+publishedAt: '2022-02-21'
+summary: 'Zero-side type is an underrated concept for many Rustaceans. We will see how it shines.'
+image: '/static/images/blog/rust-zst/intro.png'
+tags: 'Pinned,Rust,Design Pattern'
+postId: 6
+---
+
+## A struct type without any fields
+
+### Rust's modern type system
+
+Rust is a modern language that has adopted lot's of good features from senior languages.
+For example, **Traits** in Rust has a concept that resembles both Haskell's _Type Classes_ and Java/Typescript's _Interfaces_.
+And special types like `Option<T>` and `Result<T,E>` are inspired from lot's of functional programming languages.
+Thanks to those adopted concepts, Rust's type system gives outstanding developer experience.
+
+### Zero-sized type
+
+Today I want to introduce one of the most underrated type pattern called "zero-sized type(shortened as ZST)".
+We can declare them like this.
+
+```rust
+struct ZeroSizedType;
+```
+
+ZST doesn't contain any fields, which means there's no need to allocate any memory space for this type - makes sense for the name 'zero-sized'!
+Question is, what's the use of some struct type if it isn't constructed with fields? Let's find out.
+
+## Usage of Zero-sized type - a state machine
+
+The most straighforward example to understand the usage of zero-sized type is a state-machine.
+But what is a "state machine"? According to _Wikipedia_,
+
+> A finite-state machine (FSM) or finite-state automaton (FSA, plural:
+> automata), finite automaton, or simply a **state machine**, is a mathematical
+> model of computation. It is an abstract machine that can be in exactly one of
+> a finite number of states at any given time. The FSM can change from one state
+> to another in response to some inputs; the change from one state to another is
+> called a transition.
+
+Looks pretty academic, but state machines can be easily found in real life.
+An example image below, we have a simple process of delivering food for our customer.
+Since it has states(reserved, cooking, delivering and arrived) and transitions between them, it's a state machine.
+
+<Image
+  alt={`State machine example`}
+  src={'/static/images/blog/rust-zst/state-machine.png'}
+  comment={`Food delivery state machine diagram.`}
+  height={900}
+/>
+
+There are 4 states - `Reserved, Cooking, Delivering` and `Arrived`.
+And there are 8 possible transitions from one state to another intercepted state. By connecting transitions, we can create various scenarios(or paths).
+
+Let me show you one of the paths - the most optimistic food delivery scenario.
+
+1. `Reserved`: Our customer ask for a food delivery, then we tell the customer that the delivery reservation is confirmed if there's enough food.
+2. `Reserved` &rarr; `Cooking` : Once the delivery is reserved, the chef should start cooking the food.
+3. `Cooking` &rarr; `Delivering` : Once food is ready, chef sends the food to our delivery man/woman.
+4. `Delivering` &rarr; `Arrived` : Food has arrived to our customer. Hooray!
+
+So far we've seen the state transitions with the green path, which is a _happy path_. But in real life, this might go red, which is _sad path_ ...
+
+5. `Arrived` &rarr; `Delivering` : Oh no! We delivered different food to our customer. We should go back to the kitchen with this food.
+6. `Delivering` &rarr; `Cooking` : We tell our chef that we gave a wrong food to our customer, so we should cook a correct one.
+7. `Cooking` &rarr; `Reserved` : Our chef choose not to cook, because the kitchen is out of ingredients. We should inform our customer about this.
+   (Alternatively, we can just cook it and do `Cooking` &rarr; `Delivery` &rarr; `Arrived` again.)
+8. `Cooking` &rarr; `Reserved` : We tell our excuse to the customer, and cancel the reservation and refund the money.
+
+What a dramatic turn of event! There are tons of possible combinations we can accomplish. You name one!
+
+For further details about state machines, visit [here](https://en.wikipedia.org/wiki/Finite-state_machine).
+
+## Building food delivery state machine with ZST
+
+We can build an exact same food delivery state machine with Rust's ZST.
+The full code can be seen [here](https://gist.github.com/MRGRAVITY817/3fe92b209ac32d93e6fc0ebaf647288b).
+
+To start a new Rust project to follow along my code, run `cargo new <project-name>`.
+Once the project has been set, head to `main.rs` file and let's begin!
+
+### 1. States and Default
+
+```rust:main.rs
+use std::marker::PhantomData;
+
+struct Reserved;
+struct Cooking;
+struct Delivering;
+struct Arrived;
+
+struct FoodDelivery<State = Reserved> {
+    state: PhantomData<State>,
+}
+
+impl Default for FoodDelivery<Reserved> {
+    fn default() -> Self {
+        let state = PhantomData;
+        Self { state }
+    }
+}
+```
+
+This is how our code starts.
+
+- We created 4 zero-side structs, which will act as `State`s for our `FoodDelivery`.
+- `FoodDelivery` is a state machine. It receives generic parameter `State` which obviously holds current state.
+- By assigning `<State = Reserved>`, we designate our default state as `Reserved`.
+  - Since there's a _default_ generic type, we should implement `Default` for `Reserved` state.
+- The `state`'s type should be `PhantomData` since our states are _zero-sized_.
+
+Now we have our starting state `Reserved`, let's add green/red paths for 4 states.
+
+### 2. Green/Red paths - State transitions
+
+```rust:main.rs
+...
+
+impl FoodDelivery<Reserved> {
+    fn reserved(&self) -> FoodDelivery<Cooking> {
+        println!("Your delivery has been successfully placed!");
+        println!("Now we'll start cooking your food.\n");
+        self.proceed::<Cooking>()
+    }
+
+    fn cancel_order(&self) -> Self {
+        println!("Order canceled - money refunded.");
+        println!("We hope you to see in another service.\n");
+        self.stay()
+    }
+}
+```
+
+Both methods above starts _from_ `Reserved`. `fn reserved()` is a green path and `fn cancel_order()` is a path that points itself(cause there's no state to go before this level).
+
+Let continue with other states.
+
+```rust:main.rs
+...
+
+impl FoodDelivery<Cooking> {
+    fn cooking_finished(&self) -> FoodDelivery<Delivering> {
+        println!("Your food is successfully cooked!");
+        println!("Now we'll send your food via delivery guy.\n");
+        self.proceed::<Delivering>()
+    }
+
+    fn cannot_cook(&self) -> FoodDelivery<Reserved> {
+        println!("Cannot cook your food - ingredients are out of stock.");
+        println!("We'll guide you to cancel your order and get refunded.\n");
+        self.proceed::<Reserved>()
+    }
+}
+
+impl FoodDelivery<Delivering> {
+    fn delivered(&self) -> FoodDelivery<Arrived> {
+        println!("Delivery guy finished delivering your food.\n");
+        self.proceed::<Arrived>()
+    }
+
+    fn taking_food_back(&self) -> FoodDelivery<Cooking> {
+        println!("We are taking your food back to the kitchen.");
+        println!("We will tell chef to cook your food again.\n");
+        self.proceed::<Cooking>()
+    }
+}
+
+impl FoodDelivery<Arrived> {
+    fn confirm_arrival(&self) -> Self {
+        println!("Food has arrived! Have a nice meal :)\n");
+        self.stay()
+    }
+
+    fn cancel_arrival(&self) -> FoodDelivery<Delivering> {
+        println!("Oh no! Wrong food :(");
+        println!("We will take your food again via delivery man/woman\n");
+        self.proceed::<Delivering>()
+    }
+}
+```
+
+Same, the each methods starts _from_ each states. By now you'd notice some interesting parts.
+
+- Transition methods are separated for each states: Even though we're implementing the same `FoodDelivery` struct,
+  methods are implemented in separated manner for each `FoodDelivery<State>`.
+- `self.proceed()` and `self.stay()`: For transition from state A to B, we can move forward(`proceed`), otherwises we need to `stay`.
+
+The reason for the first one is because the underlying generic parameter is filled with different type.
+And that makes our Rust compiler to consider `FoodDelivery<Reserved>` and `FoodDelivery<Delivering>` as completely different type in binary level.
+For us, however, it feels like the type hasn't been changed but somehow Rust managed to separate the state transition methods - like magic!
+This was possible because we used ZSTs - they are **real** types, doing a useful job like this even without any memory allocation.
+
+One thing to consider - although transition methods are separated for each states, `self.proceed()` and `self.stay()` seems to be shared. How can this be?
+
+### 3. Shared methods
+
+```rust:main.rs
+...
+
+impl<State> FoodDelivery<State> {
+    fn proceed<NextState>(&self) -> FoodDelivery<NextState> {
+        FoodDelivery { state: PhantomData }
+    }
+    fn stay(&self) -> Self {
+        Self { state: PhantomData }
+    }
+}
+```
+
+We can simply make methods sharable by implement methods not for the statically typed ones, but for the generics.
+All we need to use is to implement with generic type parameter.
+
+### 4. Test scenarios
+
+Now let's test some scenarios! In this post I'll just repeat the two scenarios I described above(the _happy path_ and the _sad path_),
+but you can build any state flows you can possibly create.
+
+```rust:main.rs
+...
+
+fn main() {
+    println!("\n{:=^50}\n", " Happy Path ");
+    let happy_path = FoodDelivery::default()
+        .reserved()
+        .cooking_finished()
+        .delivered()
+        .confirm_arrival();
+
+    println!("\n{:=^50}\n", " Turns out Sad Path ");
+    let _turns_out_sad = happy_path
+        .cancel_arrival()
+        .taking_food_back()
+        .cannot_cook()
+        .cancel_order();
+}
+```
+
+Splendid isn't it? Let's try out.
+
+```bash:Terminal
+$ cargo run
+
+[Output]
+
+=================== Happy Path ===================
+
+Your delivery has been successfully placed!
+Now we'll start cooking your food.
+
+Your food is successfully cooked!
+Now we'll send your food via delivery guy.
+
+Delivery guy finished delivering your food.
+
+Food has arrived! Have a nice meal :)
+
+
+=============== Turns out Sad Path ===============
+
+Oh no! Wrong food :(
+We will take your food again via delivery man/woman
+
+We are taking your food back to the kitchen.
+We will tell chef to cook your food again.
+
+Cannot cook your food - ingredients are out of stock.
+We'll guide you to cancel your order and get refunded.
+
+Order canceled - money refunded.
+We hope you to see in another service.
+
+```
+
+We've built our own state machine with Rust's amazing type system. Hooray!
+
+## Conclusion
+
+In this post we've discovered about what is a _zero-sized type_ in Rust, and how should we use it.
+One thing to clarify is that actually we've seen only **one of** the ZSTs.
+There are others like `()`, `!` and much more, and yet we've seen the `struct` version of it.
+Those also have an interesting usage to discuss about, but I am gonna leave them for future posts.
+For further details about ZSTs, visit [here](https://runrust.miraheze.org/wiki/Zero-sized_type).
+
+Thanks for reading my post! I'll see you later. Until then, **Happy Coding!**
