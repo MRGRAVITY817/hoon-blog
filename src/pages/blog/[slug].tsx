@@ -4,7 +4,6 @@ import { Blog } from '.contentlayer/types';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 import components from '../../components/MDX';
 import { BlogLayout } from '../../layouts/Blog';
-import Head from 'next/head';
 
 interface PostProps {
   post?: Blog;

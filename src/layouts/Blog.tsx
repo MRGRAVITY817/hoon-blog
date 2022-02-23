@@ -3,6 +3,7 @@ import { Comments } from '@components/Comments';
 import { AnchorPoint, PostAnchorpoints } from '@components/PostAnchorpoints';
 import { PostInfo } from '@components/PostInfo';
 import { PostTagList } from '@components/PostTagList';
+import { useRouter } from 'next/dist/client/router';
 import { useEffect, useRef, useState } from 'react';
 import { RootLayout } from './Root';
 
@@ -30,9 +31,11 @@ export const BlogLayout: React.FC<{ post?: Blog }> = ({ post, children }) => {
     setPoints(pList);
   };
 
+  const router = useRouter();
+
   useEffect(() => {
     getBriefContent();
-  }, []);
+  }, [router.asPath]);
 
   if (typeof post === 'undefined') {
     return (
