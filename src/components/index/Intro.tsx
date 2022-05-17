@@ -1,4 +1,4 @@
-import { SkillLevel, SkillSetBox } from '@components/SkillSetBox';
+import { SkillLevel } from '@components/SkillSetBox';
 import {
   DEVTO_PROFILE,
   GITHUB_PROFILE,
@@ -44,8 +44,7 @@ export const IndexIntro = () => {
               , and I am a freelance software developer.
             </p>
             <p className="laptop:text-2xl font-extralight mt-4 text-xl">
-              I write blog posts every week, mostly about techs and user
-              experience.
+              I write blog posts about techs and user experience.
             </p>
           </div>
           <div id="more-about-me">
