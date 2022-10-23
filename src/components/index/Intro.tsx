@@ -1,26 +1,13 @@
-import { SkillLevel } from '@components/SkillSetBox';
 import {
   DEVTO_PROFILE,
   GITHUB_PROFILE,
-  IXDF_PROFILE,
   LINKEDIN_PROFILE,
-  SKILL_SETS,
   TWITTER_PROFILE
 } from '@utils/constants';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
 
 export const IndexIntro = () => {
-  const [skillLevel, setSkillLevel] = useState<SkillLevel | null>(null);
-  const setFilter = (input: SkillLevel) => {
-    if (input === skillLevel) {
-      setSkillLevel(null);
-    } else {
-      setSkillLevel(input);
-    }
-  };
-
   return (
     <section className="">
       <h1 className="mb-8">Welcome, wanderer.</h1>
@@ -58,11 +45,6 @@ export const IndexIntro = () => {
               <Link href={TWITTER_PROFILE}>
                 <a className="hover:underline font-extralight laptop:text-2xl text-xl">
                   Twitter
-                </a>
-              </Link>
-              <Link href={IXDF_PROFILE}>
-                <a className="hover:underline font-extralight laptop:text-2xl text-xl">
-                  IxDF
                 </a>
               </Link>
               <Link href={GITHUB_PROFILE}>
