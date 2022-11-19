@@ -1,8 +1,4 @@
-import {
-  IXDF_PROFILE,
-  LINKEDIN_PROFILE,
-  TWITTER_PROFILE
-} from '@utils/constants';
+import { LINKEDIN_PROFILE, TWITTER_PROFILE } from '@utils/constants';
 import Link from 'next/link';
 
 const FooterMenu: React.FC<{ title: string; href: string }> = ({
@@ -22,7 +18,6 @@ export const Footer = () => {
       <div className="flex flex-row items-center justify-center gap-12">
         <FooterMenu title="LinkedIn" href={LINKEDIN_PROFILE} />
         <FooterMenu title="Twitter" href={TWITTER_PROFILE} />
-        <FooterMenu title="IxDF" href={IXDF_PROFILE} />
       </div>
     </footer>
   );

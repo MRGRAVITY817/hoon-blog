@@ -5,6 +5,7 @@ const COMMENT_TABLE_NAME = process.env.NEXT_PUBLIC_COMMENT_TABLE_NAME + '';
 
 const ReadComments = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id: postId } = req.query;
+  if (typeof postId === 'undefined') return;
   switch (req.method) {
     // Get all comments
     case 'GET':

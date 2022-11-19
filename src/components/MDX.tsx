@@ -32,13 +32,13 @@ const RoundedImage: React.FC<ImageProps & { comment?: string }> = ({
     <div className="mt-2">
       <div className={`relative`}>
         <Image
+          {...props}
           objectFit="cover"
           className="tablet:rounded-lg rounded-md shadow-md"
           placeholder="blur"
           blurDataURL={props.src + ''}
-          alt={props.alt}
           width={1000}
-          {...props}
+          alt={props.alt}
         />
       </div>
       <p className="my-2 italic text-center">{comment}</p>
