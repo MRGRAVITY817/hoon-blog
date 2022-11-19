@@ -18,9 +18,15 @@
     "paths": {
       "@components/*": ["./src/components/*"],
       "@layouts/*": ["./src/layouts/*"],
-      "@utils/*": ["./src/utils/*"],
+      "@utils/*": ["./src/utils/*"]
     }
   },
-  "include": ["next-env.d.ts", "contentlayer.config.ts","**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "contentlayer.config.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "./contentlayer/genreated"
+  ],
   "exclude": ["node_modules"]
 }
