@@ -1,4 +1,4 @@
-import { Blog } from '.contentlayer/types';
+import { Blog } from '.contentlayer/generated';
 import Link from 'next/link';
 import Image from 'next/image';
 import { PostTag } from 'src/components/PostTag';

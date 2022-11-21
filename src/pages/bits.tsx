@@ -15,14 +15,16 @@ const BitsAndPieces = () => {
       image={meta.image}
       type={meta.type}
     >
-      <h1 className="mb-4">Bits and Pieces</h1>
-      <h2 className="mb-6">Small dev tips for busy developers!</h2>
-      <h3 className="flex flex-row gap-4 italic">
-        Work In Progress{' '}
-        <span>
-          <BsTools />
-        </span>
-      </h3>
+      <>
+        <h1 className="mb-4">Bits and Pieces</h1>
+        <h2 className="mb-6">Small dev tips for busy developers!</h2>
+        <h3 className="flex flex-row gap-4 italic">
+          Work In Progress{' '}
+          <span>
+            <BsTools />
+          </span>
+        </h3>
+      </>
     </RootLayout>
   );
 };

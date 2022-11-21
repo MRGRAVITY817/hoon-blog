@@ -1,6 +1,6 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
-import { allBlogs } from '.contentlayer/data';
-import { Blog } from '.contentlayer/types';
+import { allBlogs } from '.contentlayer/generated';
+import { Blog } from '.contentlayer/generated';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 import components from '../../components/MDX';
 import { BlogLayout } from '../../layouts/Blog';
@@ -26,15 +26,17 @@ const Post: NextPage<PostProps> = ({ post }) => {
 
 export default Post;
 
-export const getStaticProps: GetStaticProps<PostProps, { slug: string }> =
-  async ({ params }) => {
-    const post = allBlogs.find((post) => post.slug === params?.slug);
-    return {
-      props: {
-        post
-      }
-    };
+export const getStaticProps: GetStaticProps<
+  PostProps,
+  { slug: string }
+> = async ({ params }) => {
+  const post = allBlogs.find((post) => post.slug === params?.slug);
+  return {
+    props: {
+      post
+    }
   };
+};
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {

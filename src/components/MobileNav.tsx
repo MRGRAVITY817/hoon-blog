@@ -5,6 +5,7 @@ import Link, { LinkProps } from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
 import { useSetRecoilState } from 'recoil';
 import { ToastState } from 'src/states/toastStates';
+import { ReactChild } from 'react';
 
 export const MobileNav = () => {
   const { data: session, status } = useSession();
@@ -95,7 +96,11 @@ export const MobileNav = () => {
   );
 };
 
-const MyLink: React.FC<LinkProps> = ({ href, children, ...rest }) => {
+const MyLink: React.FC<LinkProps & { children: ReactChild }> = ({
+  href,
+  children,
+  ...rest
+}) => {
   return (
     <Link href={href}>
       <a

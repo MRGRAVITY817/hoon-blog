@@ -3,12 +3,14 @@ import { Header } from '@components/Header';
 import { Toast } from '@components/Toast';
 import { useRouter } from 'next/dist/client/router';
 import Head from 'next/head';
+import { ReactElement } from 'react';
 
 export interface MetaProps {
   title: string;
   description: string;
   image: string;
   type: string;
+  children: ReactElement;
 }
 
 export const RootLayout: React.FC<MetaProps> = ({

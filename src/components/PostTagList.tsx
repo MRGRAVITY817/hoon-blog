@@ -1,4 +1,4 @@
-import { Blog } from '.contentlayer/types';
+import { Blog } from '.contentlayer/generated';
 import { PostTag } from './PostTag';
 
 export const PostTagList: React.FC<{ post: Blog }> = ({ post }) => {

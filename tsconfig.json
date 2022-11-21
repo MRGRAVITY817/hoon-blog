@@ -18,15 +18,15 @@
     "paths": {
       "@components/*": ["./src/components/*"],
       "@layouts/*": ["./src/layouts/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@utils/*": ["./src/utils/*"],
+      "contentlayer/generated": ["./.contentlayer/generated"]
     }
   },
   "include": [
     "next-env.d.ts",
-    "contentlayer.config.ts",
     "**/*.ts",
     "**/*.tsx",
-    "./contentlayer/genreated"
+    ".contentlayer/generated"
   ],
   "exclude": ["node_modules"]
 }

@@ -1,4 +1,4 @@
-import { Blog } from '.contentlayer/types';
+import { Blog } from '.contentlayer/generated';
 import _ from 'lodash';
 
 export const getBlogTags = (posts: Blog[]) => {

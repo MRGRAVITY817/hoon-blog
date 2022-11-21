@@ -1,5 +1,5 @@
-import { allBlogs } from '.contentlayer/data';
-import { Blog } from '.contentlayer/types';
+import { allBlogs } from '.contentlayer/generated';
+import { Blog } from '.contentlayer/generated';
 import { PostPreview } from '@components/PostPreview';
 import { RootLayout } from '@layouts/Root';
 import { getBlogTags, getSeries } from '@utils/blog';
@@ -72,21 +72,20 @@ const Series: NextPage<SeriesProps> = ({ series, posts }) => {
   );
 };
 export default Series;
-export const getStaticProps: GetStaticProps<SeriesProps, { slug: string }> =
-  async ({ params }) => {
-    const series =
-      allBlogs.find((post) => post.seriesId + '' === params?.slug)?.series ??
-      '';
-    const posts = allBlogs.filter(
-      (post) => post.seriesId + '' === params?.slug
-    );
-    return {
-      props: {
-        series,
-        posts
-      }
-    };
+export const getStaticProps: GetStaticProps<
+  SeriesProps,
+  { slug: string }
+> = async ({ params }) => {
+  const series =
+    allBlogs.find((post) => post.seriesId + '' === params?.slug)?.series ?? '';
+  const posts = allBlogs.filter((post) => post.seriesId + '' === params?.slug);
+  return {
+    props: {
+      series,
+      posts
+    }
   };
+};
 export const getStaticPaths: GetStaticPaths = async () => {
   const series = getSeries(allBlogs).map(({ id }) => id + '');
   return {

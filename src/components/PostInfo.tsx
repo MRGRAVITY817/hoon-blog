@@ -1,4 +1,4 @@
-import { Blog } from '.contentlayer/types';
+import { Blog } from '.contentlayer/generated';
 import { CalendarIcon, ClockIcon } from '@heroicons/react/outline';
 import { getPrettyFullDate } from '@utils/time';
 

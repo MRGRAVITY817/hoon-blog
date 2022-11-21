@@ -1,6 +1,5 @@
-import { allBlogs } from '.contentlayer/data';
+import { allBlogs } from 'contentlayer/generated';
 import { BlogPreviewCard } from '@components/BlogPreviewCard';
-import { getNumericDate } from '@utils/time';
 
 export const IndexBlog = () => {
   const posts = allBlogs;

@@ -1,7 +1,11 @@
 import Link, { LinkProps } from 'next/link';
 import Image, { ImageProps } from 'next/image';
+import { ReactChild } from 'react';
 
-const CustomLink: React.FC<LinkProps> = ({ href, ...props }) => {
+const CustomLink: React.FC<LinkProps & { children: ReactChild }> = ({
+  href,
+  ...props
+}) => {
   const isInternalLink =
     typeof href === 'string' && (href.startsWith('/') || href.startsWith('#'));
 
@@ -48,7 +52,7 @@ const RoundedImage: React.FC<ImageProps & { comment?: string }> = ({
 
 // headings
 
-const H2: React.FC = ({ children }) => {
+const H2: React.FC<{ children: ReactChild }> = ({ children }) => {
   return (
     <h2 className="scroll-mt-12 tablet:text-3xl mt-6 mb-4 text-xl font-medium">
       {children}
@@ -56,7 +60,7 @@ const H2: React.FC = ({ children }) => {
   );
 };
 
-const H3: React.FC = ({ children }) => {
+const H3: React.FC<{ children: ReactChild }> = ({ children }) => {
   return (
     <h3 className="scroll-mt-12 tablet:text-2xl mt-4 mb-2 text-lg font-normal">
       {children}
@@ -64,7 +68,7 @@ const H3: React.FC = ({ children }) => {
   );
 };
 
-const P: React.FC = ({ children }) => {
+const P: React.FC<{ children: ReactChild }> = ({ children }) => {
   return <p className="my-[2px] leading-8 mb-4">{children}</p>;
 };
 

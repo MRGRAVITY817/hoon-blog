@@ -1,4 +1,4 @@
-import { Blog } from '.contentlayer/types';
+import { Blog } from '.contentlayer/generated';
 import { getBlogTags } from '@utils/blog';
 import { PostTag } from './PostTag';
 import Image from 'next/image';

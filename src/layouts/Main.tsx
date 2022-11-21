@@ -1,6 +1,9 @@
+import { ReactChild } from 'react';
 import { RootLayout } from './Root';
 
-export const MainLayout: React.FC = ({ children }) => {
+export const MainLayout: React.FC<{ children: ReactChild }> = ({
+  children
+}) => {
   const meta = {
     title: `Hoon Wee - Developer & UX enthusiast`,
     description: `Freelance Typescript & Rust Developer. I write blog posts every week!`,
@@ -14,7 +17,7 @@ export const MainLayout: React.FC = ({ children }) => {
       image={meta.image}
       type={meta.type}
     >
-      {children}
+      <>{children}</>
     </RootLayout>
   );
 };
